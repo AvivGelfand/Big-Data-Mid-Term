@@ -15,28 +15,49 @@ can be opened nicely in excel, but only after separating it using the command:
 
 """ Question 1 Shell Commands ($): """
 
+head stackoverflow_javascript_pyhon_qa.csv 
 
+wc -w stackoverflow_javascript_pyhon_qa.csv
+
+wc -l stackoverflow_javascript_pyhon_qa.csv
+
+wc -c stackoverflow_javascript_pyhon_qa.csv
 
 """ Question 1 Shell Output ($): """
 
+question_id,title,tags,question_body,answer_id,answer_body
+39960,Javascript equivalent of Python's locals()?,javascript|python,"<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>",39982,"<p>Well, I don't think that there is something like that in js. You can always use eval instead of locals(). Like this: </p>  <pre><code>eval(s+""()""); </code></pre>  <p>You just have to know that actually function <em>foo</em> exists.</p>  <p><strong>Edit:</strong></p>  <p>Don't use eval:) Use:</p>  <pre><code>var functionName=""myFunctionName""; window[functionName](); </code></pre>"
+39960,Javascript equivalent of Python's locals()?,javascript|python,"<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>",39992,"<p>AFAIK, no. If you just want to check the existence of a given variable, you can do it by testing for it, something like this:</p>  <pre><code>if (foo) foo(); </code></pre>"
+39960,Javascript equivalent of Python's locals()?,javascript|python,"<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>",40035,"<p>@e-bartek, I think that window[functionName] won't work if you in some closure, and the function name is local to that closure.  For example:</p>  <pre><code>function foo() {     var bar = function () {         alert('hello world');     };     var s = 'bar';     window[s](); // this won't work } </code></pre>  <p>In this case, s is 'bar', but the function 'bar' only exists inside the scope of the function 'foo'.  It is not defined in the window scope.</p>  <p>Of course, this doesn't really answer the original question, I just wanted to chime in on this response.  I don't believe there is a way to do what the original question asked.</p>"
+39960,Javascript equivalent of Python's locals()?,javascript|python,"<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>",40067,"<p>@pkaeding</p>  <p>Yes, you're right. <em>window[functionName]()</em> doesn't work in this case, but <em>eval</em> does. If I needed something like this, I'd create my own object to keep those functions together.</p>  <pre><code>var func = {}; func.bar = ...; var s = ""bar""; func[s](); </code></pre>"
+39960,Javascript equivalent of Python's locals()?,javascript|python,"<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>",40173,"<ul> <li><p>locals() - No. </p></li> <li><p>globals() - Yes.</p></li> </ul>  <p><code>window</code> is a reference to the global scope, like <code>globals()</code> in python.</p>  <pre><code>globals()[""foo""] </code></pre>  <p>is the same as:</p>  <pre><code>window[""foo""] </code></pre>"
+112112,Javascript interpreter to replace Python,javascript|shell|scripting,"<p>In terms of quick dynamically typed languages, I'm really starting to like Javascript, as I use it a lot for web projects, especially because it uses the same syntax as Actionscript (flash).</p>  <p>It would be an ideal language for shell scripting, making it easier to move code from the front and back end of a site, and less of the strange syntax of python.</p>  <p>Is there a good, javascript interpreter that is easy to install (I know there's one based on java, but that would mean installing all the java stuff to use), </p>",112119,"<p>In my years I've found most Javascript developers find it quite easy to transfer over to PHP and vice versa - it isn't a direct answer to your question, although if you're working in ActionScript and JavaScript then you're best to stick with something like PHP (if you're not willing to move to Java, and stick with the ECMA base)</p>"
+112112,Javascript interpreter to replace Python,javascript|shell|scripting,"<p>In terms of quick dynamically typed languages, I'm really starting to like Javascript, as I use it a lot for web projects, especially because it uses the same syntax as Actionscript (flash).</p>  <p>It would be an ideal language for shell scripting, making it easier to move code from the front and back end of a site, and less of the strange syntax of python.</p>  <p>Is there a good, javascript interpreter that is easy to install (I know there's one based on java, but that would mean installing all the java stuff to use), </p>",112122,"<p>Google's <a href=""http://code.google.com/apis/v8/build.html"" rel=""nofollow noreferrer"">V8</a> can be used as a standalone interpreter. Configuring with <code>scons sample=shell</code> will build an executable named <code>shell</code>, that can be called like so: <code>./shell file.js</code>.</p>"
+112112,Javascript interpreter to replace Python,javascript|shell|scripting,"<p>In terms of quick dynamically typed languages, I'm really starting to like Javascript, as I use it a lot for web projects, especially because it uses the same syntax as Actionscript (flash).</p>  <p>It would be an ideal language for shell scripting, making it easier to move code from the front and back end of a site, and less of the strange syntax of python.</p>  <p>Is there a good, javascript interpreter that is easy to install (I know there's one based on java, but that would mean installing all the java stuff to use), </p>",112124,"<p>There are four big javascript interpreters currently. V8, Squirrelfish, Spidermonkey and Rhino.  I think more important than performance is how well it integrates into existing infrastructure, and I guess Rhino with its bridge to Java wins here.</p>"
 
-<Put the output here>
+Line count:
+4399
 
+word count:
+1083882
+
+Char count:
+10006180
 
 """ Question 2 Shell Commands ($): """
 
-
+awk -F, '{print $4}' stackoverflow_javascript_pyhon_qa.csv | grep -oEi '\b(pandas|numpy)\b' | wc -l
 
 """ Question 2 Shell Output ($): """
 
+26
 
 """ Question 3 Shell Commands ($): """
 
-
+(After we reran the query to retrieve the dates of the question)
 
 
 """ Question 3 Shell Output ($): """
-
 
 
 
