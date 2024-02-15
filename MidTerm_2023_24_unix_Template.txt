@@ -1,0 +1,59 @@
+## MidTerm 52019/52002 2023-24
+
+# Student IDs: 
+ID1: 208747287
+ID2: 206958068
+
+
+## You must show a "Proof of Work" for each question, even if there is no explicit output. 
+## For example, a proof of work can be a printout/output that demonstrates that your command achieved the requirements. 
+
+Remark: Before doing all the questions, we address the commas problem in the file. The file 
+can be opened nicely in excel, but only after separating it using the command: 
+
+> awk -F'"' -v OFS='"' '{ for (i=2; i<=NF; i+=2) gsub(",", "COMMAINSIDEQUOTES", $i) } 1' stackoverflow_javascript_python_qa.csv | sed "s/\,/\\t/g" | sed "s/COMMAINSIDEQUOTES/\,/g" > stackoverflow_javascript_python_qa_clean.csv
+
+""" Question 1 Shell Commands ($): """
+
+
+
+""" Question 1 Shell Output ($): """
+
+
+<Put the output here>
+
+
+""" Question 2 Shell Commands ($): """
+
+
+
+""" Question 2 Shell Output ($): """
+
+
+""" Question 3 Shell Commands ($): """
+
+
+
+
+""" Question 3 Shell Output ($): """
+
+
+
+
+""" Question 4 Shell Commands ($): """
+
+
+
+""" Question 4 Shell Output ($): """
+
+
+""" Question 5 Shell Commands ($): """
+
+
+
+""" Question 5 Shell Output ($): """
+
+
+
+""" Question 5 Shell Answer ($): """
+

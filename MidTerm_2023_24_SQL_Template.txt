@@ -1,0 +1,72 @@
+## MidTerm 52019/52002 2023-24
+
+# Student IDs: 
+ID1: 
+ID2: 
+
+
+""" Query 1: """
+
+<Your answer here>
+
+
+""" Query 1 Output (Json): """
+
+<Your output here>
+
+
+
+""" Query 2: """
+
+
+
+""" Query 2 Output (Json): """
+
+
+
+
+""" Query 3: """
+
+
+
+""" Query 3 Output (Json): """
+
+
+
+""" Query 3  Answer:  """
+
+<Your text here>
+
+
+
+""" Query 4: """
+
+
+
+""" Query 4 Output (Json): """
+
+
+
+
+""" Query 5: """
+
+
+
+""" Query 5 Output (Json): """
+
+
+
+""" Query 5  Answer:  """
+
+
+
+
+""" Query 6: """
+
+
+
+
+""" Query 6 Output (Json): """
+
+
+
