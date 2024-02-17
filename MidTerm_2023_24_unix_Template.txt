@@ -52,12 +52,13 @@ awk -F, '{print $4}' stackoverflow_javascript_pyhon_qa.csv | grep -oEi '\b(panda
 
 26
 
-""" Question 3 Shell Commands ($): """
+""" Question 3 Shell Commands ($): """  -- FINISH THIS QUESTION       !
 
 (After we reran the query to retrieve the dates of the question)
 
 
-""" Question 3 Shell Output ($): """
+
+""" Question 3 Shell Output ($): """            !
 
 
 

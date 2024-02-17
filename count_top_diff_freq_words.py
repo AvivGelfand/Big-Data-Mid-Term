@@ -1,34 +1,40 @@
-import numpy as np
-import re
 import sys
+from collections import Counter
 
+def read_file(file_path):
+    """Reads a file and returns a list of words in lowercase."""
+    with open(file_path, 'r') as file:
+        return file.read().lower().split()
 
-def script(file_path, k):
-    # Normalise all words from file into a list of words
-    all_words = open(file_path, "r").read().lower()
-    all_words = np.array(re.sub(r"[^\w\s']", "", all_words).split())
+def calculate_relative_frequencies(word_list):
+    """Calculates and returns the relative frequency of words in a list."""
+    total_words = len(word_list)
+    word_counts = Counter(word_list)
+    return {word: count / total_words for word, count in word_counts.items()}
 
-    # Converting stop_words.txt into an array of words
-    stop_words = np.array(open('stop_words.txt', "r").read().replace('"', '').strip('{').strip('}').split(", "))
-    stop_words = np.array([word.strip("'").strip('"') for word in stop_words])
+def main(file1_path, file2_path, k):
+    # Read and process the files
+    words_file1 = read_file(file1_path)
+    words_file2 = read_file(file2_path)
+    
+    # Calculate relative frequencies
+    freqs_file1 = calculate_relative_frequencies(words_file1)
+    freqs_file2 = calculate_relative_frequencies(words_file2)
+    
+    # Calculate the difference in relative frequencies
+    diff_freqs = {word: abs(freqs_file1.get(word, 0) - freqs_file2.get(word, 0)) for word in set(freqs_file1) | set(freqs_file2)}
+    
+    # Get the top k words with the maximum difference in relative frequency
+    top_diff_words = sorted(diff_freqs, key=diff_freqs.get, reverse=True)[:k]
+    
+    # Print the results
+    for word in top_diff_words:
+        print(f"{word}: {diff_freqs[word]}")
 
-    # Finding all words from file that aren't in stop_words
-    valid_words = all_words[~np.isin(all_words, stop_words)]
-
-    # Counting the number of occurrences
-    unique_words, count = np.unique(np.array(valid_words), return_counts=True)
-    sorted_ind = np.argsort(count)
-    unique_words, count = unique_words[sorted_ind], count[sorted_ind]
-
-    # Creating a single array of tuples (word, word count)
-    sorted_words = list(zip(unique_words, count))[::-1]
-
-    for word in sorted_words[:k]:
-        print(word)
-
-
-if __name__ == '__main__':
-    if (sys.argv[1] is not None) and (sys.argv[2] is not None) and sys.argv[2].isdigit():
-        script(sys.argv[1], int(sys.argv[2]))
-    else:
-        print('Invalid Arguments')
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("Usage: python3 count_top_diff_freq_words.py file1.txt file2.txt k")
+        sys.exit(1)
+    
+    file1, file2, k = sys.argv[1], sys.argv[2], int(sys.argv[3])
+    main(file1, file2, k)
