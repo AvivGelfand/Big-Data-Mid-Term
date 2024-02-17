@@ -6,36 +6,307 @@ ID2:
 
 
 """ Query 1: """
-
-<Your answer here>
-
+select id,
+        title,
+        tags,
+        answer_count,
+        score
+from `bigquery-public-data.stackoverflow.posts_questions`
+where lower(tags) like"%javascript%"
+limit 5
 
 """ Query 1 Output (Json): """
 
-<Your output here>
+[{
+  "id": "3232809",
+  "title": "bitshift equivalent of math.round",
+  "tags": "javascript",
+  "answer_count": "0",
+  "score": "0"
+}, {
+  "id": "3429078",
+  "title": "String Manipulation required",
+  "tags": "javascript",
+  "answer_count": "0",
+  "score": "0"
+}, {
+  "id": "3435709",
+  "title": "Why are functions in JavaScript set to global variables instead of plain functions?",
+  "tags": "javascript|function|anonymous-function",
+  "answer_count": "0",
+  "score": "0"
+}, {
+  "id": "3508995",
+  "title": "How can i pass JavaScript dictionary to action result?",
+  "tags": "javascript|jquery|ajax|asp.net-mvc-2",
+  "answer_count": "0",
+  "score": "0"
+}, {
+  "id": "3568826",
+  "title": "How do I put linebreaks in tooltips?",
+  "tags": "javascript|html|css|xml|svg",
+  "answer_count": "0",
+  "score": "0"
+}]
 
 
 
 """ Query 2: """
+WITH Q1 AS (
+    SELECT
+        id,
+        title,
+        tags,
+        answer_count,
+        score AS score,
+        view_count,
+        CASE
+            WHEN LOWER(tags) LIKE '%java%' THEN 'java'
+            ELSE 'else'
+        END AS java_language
+    FROM
+        `bigquery-public-data.stackoverflow.posts_questions`
+    WHERE
+        LOWER(tags) LIKE '%javascript%'
+)
+
+
+SELECT
+    'All Results' AS tag_used,
+    SUM(answer_count) AS sum_answers,
+    COUNT(*) AS posts_with_one_or_more_answer,
+    AVG(answer_count) AS avg_answers,
+    AVG(score) AS avg_score,
+    AVG(view_count) AS avg_views_per_post
+FROM
+    Q1
+
+UNION ALL
+
+SELECT
+    'Java Results' AS tag_used,
+    SUM(answer_count) AS sum_answers,
+    COUNT(*) AS posts_with_one_or_more_answer,
+    AVG(answer_count) AS avg_answers,
+    AVG(score) AS avg_score,
+    AVG(view_count) AS avg_views_per_post
+FROM
+    Q1
+WHERE
+    java_language = 'java';
 
 
 
 """ Query 2 Output (Json): """
-
+[{
+  "tag_used": "All Results",
+  "sum_answers": "3785058",
+  "posts_with_one_or_more_answer": "2434159",
+  "avg_answers": "1.5549756609983154",
+  "avg_score": "2.0792754294193592",
+  "avg_views_per_post": "2859.4571028433224"
+}, {
+  "tag_used": "Java Results",
+  "sum_answers": "3785058",
+  "posts_with_one_or_more_answer": "2434159",
+  "avg_answers": "1.5549756609983161",
+  "avg_score": "2.07927542941936",
+  "avg_views_per_post": "2859.4571028433211"
+}]
 
 
 
 """ Query 3: """
+WITH Q1 AS (
+    SELECT
+        id,
+        title,
+        tags,
+        answer_count,
+        score AS score,
+        view_count,
+        CASE
+            WHEN LOWER(tags) LIKE '%java%' THEN 'java'
+            ELSE 'else'
+        END AS java_language,
+        EXTRACT(DAYOFWEEK from creation_date) as post_day
 
+    FROM
+        `bigquery-public-data.stackoverflow.posts_questions`
+    WHERE
+        LOWER(tags) LIKE '%javascript%'
+)
+
+
+SELECT
+    'All Results' AS tag_used,
+     count(*) as all_posts,
+    SUM(answer_count) AS sum_answers,
+    COUNT(*) AS posts_with_one_or_more_answer,
+    AVG(answer_count) AS avg_answers,
+    AVG(score) AS avg_score,
+    AVG(view_count) AS avg_views_per_post,
+    post_day
+FROM
+    Q1
+Group by post_day
+
+UNION ALL
+
+SELECT
+    'Java Results' AS tag_used,
+    count(*) as all_posts,
+    SUM(answer_count) AS sum_answers,
+    COUNT(*) AS posts_with_one_or_more_answer,
+    AVG(answer_count) AS avg_answers,
+    AVG(score) AS avg_score,
+    AVG(view_count) AS avg_views_per_post,
+    post_day
+FROM
+    Q1
+WHERE
+    java_language = 'java'
+Group by post_day
+
+
+order by tag_used,  all_posts desc;
 
 
 """ Query 3 Output (Json): """
-
+[{
+  "tag_used": "All Results",
+  "all_posts": "220939",
+  "sum_answers": "336621",
+  "posts_with_one_or_more_answer": "220939",
+  "avg_answers": "1.523592484803497",
+  "avg_score": "2.0430028197828363",
+  "avg_views_per_post": "2731.4435115574888",
+  "post_day": "7"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "221613",
+  "sum_answers": "332036",
+  "posts_with_one_or_more_answer": "221613",
+  "avg_answers": "1.498269505850288",
+  "avg_score": "1.9640860418838251",
+  "avg_views_per_post": "2642.3997148181743",
+  "post_day": "1"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "371657",
+  "sum_answers": "585878",
+  "posts_with_one_or_more_answer": "371657",
+  "avg_answers": "1.57639436362022",
+  "avg_score": "2.0808702647871558",
+  "avg_views_per_post": "2874.2597502535932",
+  "post_day": "6"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "376293",
+  "sum_answers": "581108",
+  "posts_with_one_or_more_answer": "376293",
+  "avg_answers": "1.54429659866115",
+  "avg_score": "2.0090036221773988",
+  "avg_views_per_post": "2855.3431979866746",
+  "post_day": "2"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "410725",
+  "sum_answers": "642927",
+  "posts_with_one_or_more_answer": "410725",
+  "avg_answers": "1.5653466431310488",
+  "avg_score": "2.1198125266297407",
+  "avg_views_per_post": "2924.04400267819",
+  "post_day": "3"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "414798",
+  "sum_answers": "650997",
+  "posts_with_one_or_more_answer": "414798",
+  "avg_answers": "1.5694313858793918",
+  "avg_score": "2.1526260975221687",
+  "avg_views_per_post": "2939.2093910771023",
+  "post_day": "5"
+}, {
+  "tag_used": "All Results",
+  "all_posts": "418134",
+  "sum_answers": "655491",
+  "posts_with_one_or_more_answer": "418134",
+  "avg_answers": "1.5676577365150888",
+  "avg_score": "2.1087306939880519",
+  "avg_views_per_post": "2890.1264953340324",
+  "post_day": "4"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "220939",
+  "sum_answers": "336621",
+  "posts_with_one_or_more_answer": "220939",
+  "avg_answers": "1.5235924848034976",
+  "avg_score": "2.0430028197828358",
+  "avg_views_per_post": "2731.443511557487",
+  "post_day": "7"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "221613",
+  "sum_answers": "332036",
+  "posts_with_one_or_more_answer": "221613",
+  "avg_answers": "1.4982695058502877",
+  "avg_score": "1.964086041883824",
+  "avg_views_per_post": "2642.3997148181725",
+  "post_day": "1"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "371657",
+  "sum_answers": "585878",
+  "posts_with_one_or_more_answer": "371657",
+  "avg_answers": "1.5763943636202187",
+  "avg_score": "2.0808702647871558",
+  "avg_views_per_post": "2874.2597502535941",
+  "post_day": "6"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "376293",
+  "sum_answers": "581108",
+  "posts_with_one_or_more_answer": "376293",
+  "avg_answers": "1.5442965986611494",
+  "avg_score": "2.0090036221773988",
+  "avg_views_per_post": "2855.3431979866755",
+  "post_day": "2"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "410725",
+  "sum_answers": "642927",
+  "posts_with_one_or_more_answer": "410725",
+  "avg_answers": "1.5653466431310485",
+  "avg_score": "2.1198125266297403",
+  "avg_views_per_post": "2924.0440026781916",
+  "post_day": "3"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "414798",
+  "sum_answers": "650997",
+  "posts_with_one_or_more_answer": "414798",
+  "avg_answers": "1.5694313858793918",
+  "avg_score": "2.1526260975221678",
+  "avg_views_per_post": "2939.2093910771018",
+  "post_day": "5"
+}, {
+  "tag_used": "Java Results",
+  "all_posts": "418134",
+  "sum_answers": "655491",
+  "posts_with_one_or_more_answer": "418134",
+  "avg_answers": "1.5676577365150881",
+  "avg_score": "2.108730693988051",
+  "avg_views_per_post": "2890.1264953340315",
+  "post_day": "4"
+}]
 
 
 """ Query 3  Answer:  """
-
-<Your text here>
+In post with the tag javascript:
+- Day 4 seems the most popular day for posting as well as answearing
+- The weekend days 7 and 1 are the most un-popular days for users, both in terms of posting and in terms of and answering
+- The scores seem to distribute simillarliy when all answers having an avg between 1.56 to 1.49. This could be due to the "long tail distribution" of posts. It's liekly that most posts get unoticed and many other gain populairty.
 
 
 
@@ -49,6 +320,102 @@ ID2:
 
 
 """ Query 5: """
+WITH
+US_CITIES AS (
+    SELECT
+        DISTINCT CASE
+            WHEN location LIKE '%,%' THEN REGEXP_EXTRACT(location, r'^[^,]*')
+            ELSE ''
+        END AS usa_city
+    FROM
+        `bigquery-public-data.stackoverflow.users`
+    WHERE
+        LOWER(location) LIKE '%united states%' or LOWER(location) LIKE '%u.s.a%' or  LOWER(location) LIKE '%, USA%' OR LOWER(location) LIKE LOWER('%, Alabama%')
+OR LOWER(location) LIKE LOWER('%, Alaska%')
+OR LOWER(location) LIKE LOWER('%, Arizona%')
+OR LOWER(location) LIKE LOWER('%, Arkansas%')
+OR LOWER(location) LIKE LOWER('%, California%')
+OR LOWER(location) LIKE LOWER('%, Colorado%')
+OR LOWER(location) LIKE LOWER('%, Connecticut%')
+OR LOWER(location) LIKE LOWER('%, Delaware%')
+OR LOWER(location) LIKE LOWER('%, Florida%')
+OR LOWER(location) LIKE LOWER('%, Georgia%')
+OR LOWER(location) LIKE LOWER('%, Hawaii%')
+OR LOWER(location) LIKE LOWER('%, Idaho%')
+OR LOWER(location) LIKE LOWER('%, Illinois%')
+OR LOWER(location) LIKE LOWER('%, Indiana%')
+OR LOWER(location) LIKE LOWER('%, Iowa%')
+OR LOWER(location) LIKE LOWER('%, Kansas%')
+OR LOWER(location) LIKE LOWER('%, Kentucky%')
+OR LOWER(location) LIKE LOWER('%, Louisiana%')
+OR LOWER(location) LIKE LOWER('%, Maine%')
+OR LOWER(location) LIKE LOWER('%, Maryland%')
+OR LOWER(location) LIKE LOWER('%, Massachusetts%')
+OR LOWER(location) LIKE LOWER('%, Michigan%')
+OR LOWER(location) LIKE LOWER('%, Minnesota%')
+OR LOWER(location) LIKE LOWER('%, Mississippi%')
+OR LOWER(location) LIKE LOWER('%, Missouri%')
+OR LOWER(location) LIKE LOWER('%, Montana%')
+OR LOWER(location) LIKE LOWER('%, Nebraska%')
+OR LOWER(location) LIKE LOWER('%, Nevada%')
+OR LOWER(location) LIKE LOWER('%, New Hampshire%')
+OR LOWER(location) LIKE LOWER('%, New Jersey%')
+OR LOWER(location) LIKE LOWER('%, New Mexico%')
+OR LOWER(location) LIKE LOWER('%, New York%')
+OR LOWER(location) LIKE LOWER('%, North Carolina%')
+OR LOWER(location) LIKE LOWER('%, North Dakota%')
+OR LOWER(location) LIKE LOWER('%, Ohio%')
+OR LOWER(location) LIKE LOWER('%, Oklahoma%')
+OR LOWER(location) LIKE LOWER('%, Oregon%')
+OR LOWER(location) LIKE LOWER('%, Pennsylvania%')
+OR LOWER(location) LIKE LOWER('%, Rhode Island%')
+OR LOWER(location) LIKE LOWER('%, South Carolina%')
+OR LOWER(location) LIKE LOWER('%, South Dakota%')
+OR LOWER(location) LIKE LOWER('%, Tennessee%')
+OR LOWER(location) LIKE LOWER('%, Texas%')
+OR LOWER(location) LIKE LOWER('%, Utah%')
+OR LOWER(location) LIKE LOWER('%, Vermont%')
+OR LOWER(location) LIKE LOWER('%, Virginia%')
+OR LOWER(location) LIKE LOWER('%, Washington%')
+OR LOWER(location) LIKE LOWER('%, West Virginia%')
+OR LOWER(location) LIKE LOWER('%, Wisconsin%')
+OR LOWER(location) LIKE LOWER('%, Wyoming%')
+
+
+),
+
+RankedUsers AS (
+    SELECT
+        c.usa_city,
+        u.id,
+        u.display_name,
+        u.about_me,
+        u.website_url,
+        u.reputation,
+        u.location,
+        ROW_NUMBER() OVER (PARTITION BY c.usa_city ORDER BY u.reputation DESC) as rank
+    FROM
+        US_CITIES c
+    LEFT JOIN
+        `bigquery-public-data.stackoverflow.users` u
+    ON
+        lower(c.usa_city) = lower(REGEXP_EXTRACT(u.location, r'^[^,]*'))
+    WHERE
+        LOWER(u.about_me) LIKE '%javascript%' OR LOWER(u.about_me) LIKE '% js %'
+)
+
+SELECT
+    r.usa_city,
+    r.id,
+    r.display_name,
+    r.about_me,
+    r.website_url,
+    r.reputation,
+    r.location
+FROM
+    RankedUsers r
+WHERE
+    r.rank = 1;
 
 
 
