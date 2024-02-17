@@ -201,10 +201,40 @@ request: 0.0038489498130597653
 
 
 """ Question 5 Shell Commands ($): """
-
+sbatch duplicate_and_zip.sh
 
 
 """ Question 5 Shell Output ($): """
+Submitted batch job 21454039
+Duplicating file...
+
+real	0m1.372s
+user	0m0.006s
+sys	0m0.107s
+Sorting duplicated file...
+
+real	0m2.010s
+user	0m1.158s
+sys	0m0.122s
+Compressing original file...
+  adding: stackoverflow_javascript_python_qa.csv (deflated 75%)
+
+real	0m0.418s
+user	0m0.330s
+sys	0m0.004s
+Compressing duplicated file...
+  adding: duplicated.csv (deflated 75%)
+
+real	0m3.475s
+user	0m3.240s
+sys	0m0.043s
+Compressing sorted duplicated file...
+  adding: duplicated_sorted.csv (deflated 96%)
+
+real	0m2.907s
+user	0m0.978s
+sys	0m0.073s
+Compression completed.
 
 
 
