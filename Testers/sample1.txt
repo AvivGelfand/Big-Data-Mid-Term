@@ -1,0 +1,1 @@
+This sounds like a great project to work on! Let's create a Python program that does just what you've described. It will be a fantastic addition to your portfolio, showcasing your ability to work with text data, calculate statistics, and compare information between datasets. Here's how we'll approach this task.
