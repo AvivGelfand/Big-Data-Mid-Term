@@ -12,292 +12,168 @@ select id,
         score
 from `bigquery-public-data.stackoverflow.posts_questions`
 where lower(tags) like"%javascript%"
+order by score desc
 limit 5
 
 """ Query 1 Output (Json): """
-
 [{
-  "id": "3232809",
-  "title": "bitshift equivalent of math.round",
-  "tags": "javascript",
-  "answer_count": "0",
-  "score": "0"
+  "id": "5767325",
+  "title": "How can I remove a specific item from an array?",
+  "tags": "javascript|arrays",
+  "answer_count": "137",
+  "score": "10953"
 }, {
-  "id": "3429078",
-  "title": "String Manipulation required",
-  "tags": "javascript",
-  "answer_count": "0",
-  "score": "0"
+  "id": "178325",
+  "title": "How do I check if an element is hidden in jQuery?",
+  "tags": "javascript|jquery|dom|visibility",
+  "answer_count": "65",
+  "score": "8447"
 }, {
-  "id": "3435709",
-  "title": "Why are functions in JavaScript set to global variables instead of plain functions?",
-  "tags": "javascript|function|anonymous-function",
-  "answer_count": "0",
-  "score": "0"
+  "id": "1335851",
+  "title": "What does \"use strict\" do in JavaScript, and what is the reasoning behind it?",
+  "tags": "javascript|syntax|jslint|use-strict",
+  "answer_count": "31",
+  "score": "8264"
 }, {
-  "id": "3508995",
-  "title": "How can i pass JavaScript dictionary to action result?",
-  "tags": "javascript|jquery|ajax|asp.net-mvc-2",
-  "answer_count": "0",
-  "score": "0"
+  "id": "503093",
+  "title": "How do I redirect to another webpage?",
+  "tags": "javascript|jquery|redirect",
+  "answer_count": "58",
+  "score": "7707"
 }, {
-  "id": "3568826",
-  "title": "How do I put linebreaks in tooltips?",
-  "tags": "javascript|html|css|xml|svg",
-  "answer_count": "0",
-  "score": "0"
+  "id": "111102",
+  "title": "How do JavaScript closures work?",
+  "tags": "javascript|function|variables|scope|closures",
+  "answer_count": "86",
+  "score": "7623"
 }]
 
 
 
 """ Query 2: """
-WITH Q1 AS (
-    SELECT
-        id,
-        title,
-        tags,
-        answer_count,
-        score AS score,
-        view_count,
-        CASE
-            WHEN LOWER(tags) LIKE '%java%' THEN 'java'
-            ELSE 'else'
-        END AS java_language
-    FROM
-        `bigquery-public-data.stackoverflow.posts_questions`
-    WHERE
-        LOWER(tags) LIKE '%javascript%'
-)
-
 
 SELECT
     'All Results' AS tag_used,
-    SUM(answer_count) AS sum_answers,
-    COUNT(*) AS posts_with_one_or_more_answer,
+    COUNT(answer_count) AS total_posts,
+    COUNTIF(answer_count >=1) AS posts_with_answers,
     AVG(answer_count) AS avg_answers,
     AVG(score) AS avg_score,
     AVG(view_count) AS avg_views_per_post
 FROM
-    Q1
+    `bigquery-public-data.stackoverflow.posts_questions`
+WHERE LOWER(tags) LIKE '%javascript%'
 
 UNION ALL
 
 SELECT
     'Java Results' AS tag_used,
-    SUM(answer_count) AS sum_answers,
-    COUNT(*) AS posts_with_one_or_more_answer,
+    COUNT(answer_count) AS total_posts,
+    COUNTIF(answer_count >=1) AS posts_with_answers,
     AVG(answer_count) AS avg_answers,
     AVG(score) AS avg_score,
     AVG(view_count) AS avg_views_per_post
 FROM
-    Q1
+    `bigquery-public-data.stackoverflow.posts_questions`
 WHERE
-    java_language = 'java';
+    LOWER(tags) LIKE '%java%'
+    AND LOWER(tags) NOT LIKE '%javascript%'
 
 
 
 """ Query 2 Output (Json): """
 [{
   "tag_used": "All Results",
-  "sum_answers": "3785058",
-  "posts_with_one_or_more_answer": "2434159",
-  "avg_answers": "1.5549756609983154",
-  "avg_score": "2.0792754294193592",
-  "avg_views_per_post": "2859.4571028433224"
+  "total_posts": "2434159",
+  "posts_with_answers": "2094314",
+  "avg_answers": "1.5549756609983156",
+  "avg_score": "2.0792754294193596",
+  "avg_views_per_post": "2859.4571028433215"
 }, {
   "tag_used": "Java Results",
-  "sum_answers": "3785058",
-  "posts_with_one_or_more_answer": "2434159",
-  "avg_answers": "1.5549756609983161",
-  "avg_score": "2.07927542941936",
-  "avg_views_per_post": "2859.4571028433211"
+  "total_posts": "1900935",
+  "posts_with_answers": "1631221",
+  "avg_answers": "1.6071133415924266",
+  "avg_score": "2.2477996354425609",
+  "avg_views_per_post": "3402.1347736771654"
 }]
 
 
 
 """ Query 3: """
-WITH Q1 AS (
-    SELECT
-        id,
-        title,
-        tags,
-        answer_count,
-        score AS score,
-        view_count,
-        CASE
-            WHEN LOWER(tags) LIKE '%java%' THEN 'java'
-            ELSE 'else'
-        END AS java_language,
-        EXTRACT(DAYOFWEEK from creation_date) as post_day
-
-    FROM
-        `bigquery-public-data.stackoverflow.posts_questions`
-    WHERE
-        LOWER(tags) LIKE '%javascript%'
-)
-
 
 SELECT
     'All Results' AS tag_used,
-     count(*) as all_posts,
-    SUM(answer_count) AS sum_answers,
-    COUNT(*) AS posts_with_one_or_more_answer,
+    COUNT(answer_count) AS total_posts,
+    COUNTIF(answer_count >=1) AS posts_with_answers,
     AVG(answer_count) AS avg_answers,
     AVG(score) AS avg_score,
     AVG(view_count) AS avg_views_per_post,
-    post_day
+    EXTRACT(DAYOFWEEK from creation_date) as post_day
 FROM
-    Q1
+    `bigquery-public-data.stackoverflow.posts_questions`
+WHERE LOWER(tags) LIKE '%javascript%'
 Group by post_day
 
-UNION ALL
-
-SELECT
-    'Java Results' AS tag_used,
-    count(*) as all_posts,
-    SUM(answer_count) AS sum_answers,
-    COUNT(*) AS posts_with_one_or_more_answer,
-    AVG(answer_count) AS avg_answers,
-    AVG(score) AS avg_score,
-    AVG(view_count) AS avg_views_per_post,
-    post_day
-FROM
-    Q1
-WHERE
-    java_language = 'java'
-Group by post_day
-
-
-order by tag_used,  all_posts desc;
+order by tag_used,  total_posts desc;
 
 
 """ Query 3 Output (Json): """
 [{
   "tag_used": "All Results",
-  "all_posts": "220939",
-  "sum_answers": "336621",
-  "posts_with_one_or_more_answer": "220939",
-  "avg_answers": "1.523592484803497",
-  "avg_score": "2.0430028197828363",
-  "avg_views_per_post": "2731.4435115574888",
-  "post_day": "7"
+  "total_posts": "418134",
+  "posts_with_answers": "359182",
+  "avg_answers": "1.5676577365150874",
+  "avg_score": "2.1087306939880519",
+  "avg_views_per_post": "2890.1264953340328",
+  "post_day": "4"
 }, {
   "tag_used": "All Results",
-  "all_posts": "221613",
-  "sum_answers": "332036",
-  "posts_with_one_or_more_answer": "221613",
-  "avg_answers": "1.498269505850288",
-  "avg_score": "1.9640860418838251",
-  "avg_views_per_post": "2642.3997148181743",
-  "post_day": "1"
-}, {
-  "tag_used": "All Results",
-  "all_posts": "371657",
-  "sum_answers": "585878",
-  "posts_with_one_or_more_answer": "371657",
-  "avg_answers": "1.57639436362022",
-  "avg_score": "2.0808702647871558",
-  "avg_views_per_post": "2874.2597502535932",
-  "post_day": "6"
-}, {
-  "tag_used": "All Results",
-  "all_posts": "376293",
-  "sum_answers": "581108",
-  "posts_with_one_or_more_answer": "376293",
-  "avg_answers": "1.54429659866115",
-  "avg_score": "2.0090036221773988",
-  "avg_views_per_post": "2855.3431979866746",
-  "post_day": "2"
-}, {
-  "tag_used": "All Results",
-  "all_posts": "410725",
-  "sum_answers": "642927",
-  "posts_with_one_or_more_answer": "410725",
-  "avg_answers": "1.5653466431310488",
-  "avg_score": "2.1198125266297407",
-  "avg_views_per_post": "2924.04400267819",
-  "post_day": "3"
-}, {
-  "tag_used": "All Results",
-  "all_posts": "414798",
-  "sum_answers": "650997",
-  "posts_with_one_or_more_answer": "414798",
-  "avg_answers": "1.5694313858793918",
-  "avg_score": "2.1526260975221687",
-  "avg_views_per_post": "2939.2093910771023",
+  "total_posts": "414798",
+  "posts_with_answers": "356302",
+  "avg_answers": "1.5694313858793916",
+  "avg_score": "2.1526260975221683",
+  "avg_views_per_post": "2939.2093910771027",
   "post_day": "5"
 }, {
   "tag_used": "All Results",
-  "all_posts": "418134",
-  "sum_answers": "655491",
-  "posts_with_one_or_more_answer": "418134",
-  "avg_answers": "1.5676577365150888",
-  "avg_score": "2.1087306939880519",
-  "avg_views_per_post": "2890.1264953340324",
-  "post_day": "4"
+  "total_posts": "410725",
+  "posts_with_answers": "352668",
+  "avg_answers": "1.5653466431310485",
+  "avg_score": "2.1198125266297403",
+  "avg_views_per_post": "2924.0440026781907",
+  "post_day": "3"
 }, {
-  "tag_used": "Java Results",
-  "all_posts": "220939",
-  "sum_answers": "336621",
-  "posts_with_one_or_more_answer": "220939",
-  "avg_answers": "1.5235924848034976",
+  "tag_used": "All Results",
+  "total_posts": "376293",
+  "posts_with_answers": "322260",
+  "avg_answers": "1.5442965986611499",
+  "avg_score": "2.0090036221773993",
+  "avg_views_per_post": "2855.3431979866741",
+  "post_day": "2"
+}, {
+  "tag_used": "All Results",
+  "total_posts": "371657",
+  "posts_with_answers": "320208",
+  "avg_answers": "1.5763943636202202",
+  "avg_score": "2.0808702647871562",
+  "avg_views_per_post": "2874.2597502535959",
+  "post_day": "6"
+}, {
+  "tag_used": "All Results",
+  "total_posts": "221613",
+  "posts_with_answers": "191690",
+  "avg_answers": "1.4982695058502891",
+  "avg_score": "1.964086041883824",
+  "avg_views_per_post": "2642.3997148181747",
+  "post_day": "1"
+}, {
+  "tag_used": "All Results",
+  "total_posts": "220939",
+  "posts_with_answers": "192004",
+  "avg_answers": "1.5235924848034972",
   "avg_score": "2.0430028197828358",
   "avg_views_per_post": "2731.443511557487",
   "post_day": "7"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "221613",
-  "sum_answers": "332036",
-  "posts_with_one_or_more_answer": "221613",
-  "avg_answers": "1.4982695058502877",
-  "avg_score": "1.964086041883824",
-  "avg_views_per_post": "2642.3997148181725",
-  "post_day": "1"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "371657",
-  "sum_answers": "585878",
-  "posts_with_one_or_more_answer": "371657",
-  "avg_answers": "1.5763943636202187",
-  "avg_score": "2.0808702647871558",
-  "avg_views_per_post": "2874.2597502535941",
-  "post_day": "6"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "376293",
-  "sum_answers": "581108",
-  "posts_with_one_or_more_answer": "376293",
-  "avg_answers": "1.5442965986611494",
-  "avg_score": "2.0090036221773988",
-  "avg_views_per_post": "2855.3431979866755",
-  "post_day": "2"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "410725",
-  "sum_answers": "642927",
-  "posts_with_one_or_more_answer": "410725",
-  "avg_answers": "1.5653466431310485",
-  "avg_score": "2.1198125266297403",
-  "avg_views_per_post": "2924.0440026781916",
-  "post_day": "3"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "414798",
-  "sum_answers": "650997",
-  "posts_with_one_or_more_answer": "414798",
-  "avg_answers": "1.5694313858793918",
-  "avg_score": "2.1526260975221678",
-  "avg_views_per_post": "2939.2093910771018",
-  "post_day": "5"
-}, {
-  "tag_used": "Java Results",
-  "all_posts": "418134",
-  "sum_answers": "655491",
-  "posts_with_one_or_more_answer": "418134",
-  "avg_answers": "1.5676577365150881",
-  "avg_score": "2.108730693988051",
-  "avg_views_per_post": "2890.1264953340315",
-  "post_day": "4"
 }]
 
 
@@ -305,8 +181,8 @@ order by tag_used,  all_posts desc;
 In post with the tag javascript:
 - Day 4 seems the most popular day for posting as well as answering
 - The weekend days 7 and 1 are the most un-popular days for users, both in terms of posting and in terms of and answering
-- The scores seem to distribute simillarliy when all answers having an avg between 1.56 to 1.49. This could be due to the "long tail distribution" of posts. It's liekly that most posts get unoticed and many other gain populairty.
-
+- The amount of posts and amount of answers seem to distribute normally, peeking on the 4th day
+- The average answers per post, average views per post and average score per post slightly only slightly changed between the days of the post.
 
 """ Query 4: """
 WITH RelevantQuestions AS (
@@ -314,6 +190,7 @@ WITH RelevantQuestions AS (
         id,
         title,
         tags,
+        creation_date,
         REPLACE(body, '\n', ' ') AS body
     FROM
         `bigquery-public-data.stackoverflow.posts_questions`
@@ -326,6 +203,7 @@ SELECT
     q.id,
     q.title,
     q.tags,
+    q.creation_date,
     q.body AS question_body,
     REPLACE(a.body, '\n', ' ') AS answer_body
 FROM
@@ -339,40 +217,46 @@ ORDER BY
 LIMIT 5
 
 
-
 """ Query 4 Output (Json): """
 [{
   "id": "39960",
   "title": "Javascript equivalent of Python\u0027s locals()?",
   "tags": "javascript|python",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "creation_date": "2008-09-02 16:29:30.997000 UTC",
+  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "answer_body": "\u003cp\u003eAFAIK, no. If you just want to check the existence of a given variable, you can do it by testing for it, something like this:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eif (foo) foo(); \u003c/code\u003e\u003c/pre\u003e"
+}, {
+  "id": "39960",
+  "title": "Javascript equivalent of Python\u0027s locals()?",
+  "tags": "javascript|python",
+  "creation_date": "2008-09-02 16:29:30.997000 UTC",
+  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
   "answer_body": "\u003cp\u003e@e-bartek, I think that window[functionName] won\u0027t work if you in some closure, and the function name is local to that closure.  For example:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003efunction foo() {     var bar \u003d function () {         alert(\u0027hello world\u0027);     };     var s \u003d \u0027bar\u0027;     window[s](); // this won\u0027t work } \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIn this case, s is \u0027bar\u0027, but the function \u0027bar\u0027 only exists inside the scope of the function \u0027foo\u0027.  It is not defined in the window scope.\u003c/p\u003e  \u003cp\u003eOf course, this doesn\u0027t really answer the original question, I just wanted to chime in on this response.  I don\u0027t believe there is a way to do what the original question asked.\u003c/p\u003e"
 }, {
   "id": "39960",
   "title": "Javascript equivalent of Python\u0027s locals()?",
   "tags": "javascript|python",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "creation_date": "2008-09-02 16:29:30.997000 UTC",
+  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
   "answer_body": "\u003cp\u003eWell, I don\u0027t think that there is something like that in js. You can always use eval instead of locals(). Like this: \u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eeval(s+\"()\"); \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eYou just have to know that actually function \u003cem\u003efoo\u003c/em\u003e exists.\u003c/p\u003e  \u003cp\u003e\u003cstrong\u003eEdit:\u003c/strong\u003e\u003c/p\u003e  \u003cp\u003eDon\u0027t use eval:) Use:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar functionName\u003d\"myFunctionName\"; window[functionName](); \u003c/code\u003e\u003c/pre\u003e"
 }, {
   "id": "39960",
   "title": "Javascript equivalent of Python\u0027s locals()?",
   "tags": "javascript|python",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "creation_date": "2008-09-02 16:29:30.997000 UTC",
+  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
   "answer_body": "\u003cp\u003eI seem to remember Brendan Eich commented on this in a recent podcast; if i recall correctly, it\u0027s not being considered, as it adds unreasonable restrictions to optimization. He compared it to the \u003ccode\u003earguments\u003c/code\u003e local in that, while useful for varargs, its very existence removes the ability to guess at what a function will touch just by looking at its definition. \u003c/p\u003e  \u003cp\u003eBTW: i believe JS \u003cem\u003edid\u003c/em\u003e have support for accessing locals through the arguments local at one time - \u003ca href\u003d\"http://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Functions/arguments\" rel\u003d\"nofollow noreferrer\"\u003ea quick search\u003c/a\u003e shows this has been deprecated though.\u003c/p\u003e"
 }, {
   "id": "39960",
   "title": "Javascript equivalent of Python\u0027s locals()?",
   "tags": "javascript|python",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "creation_date": "2008-09-02 16:29:30.997000 UTC",
+  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
   "answer_body": "\u003cul\u003e \u003cli\u003e\u003cp\u003elocals() - No. \u003c/p\u003e\u003c/li\u003e \u003cli\u003e\u003cp\u003eglobals() - Yes.\u003c/p\u003e\u003c/li\u003e \u003c/ul\u003e  \u003cp\u003e\u003ccode\u003ewindow\u003c/code\u003e is a reference to the global scope, like \u003ccode\u003eglobals()\u003c/code\u003e in python.\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eglobals()[\"foo\"] \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eis the same as:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003ewindow[\"foo\"] \u003c/code\u003e\u003c/pre\u003e"
-}, {
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cp\u003e@pkaeding\u003c/p\u003e  \u003cp\u003eYes, you\u0027re right. \u003cem\u003ewindow[functionName]()\u003c/em\u003e doesn\u0027t work in this case, but \u003cem\u003eeval\u003c/em\u003e does. If I needed something like this, I\u0027d create my own object to keep those functions together.\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar func \u003d {}; func.bar \u003d ...; var s \u003d \"bar\"; func[s](); \u003c/code\u003e\u003c/pre\u003e"
 }]
 
+""" Query 4 Answer:  """
+The table contains 5518 rows.
 
 
 """ Query 5: """
@@ -506,4 +390,7 @@ ORDER BY
   "post_group": "2",
   "avg_reputation": "109321.49999999999"
 }]
+
+""" Query 6  Answer:  """
+
 
