@@ -235,6 +235,10 @@ LIMIT
   "q_title": "Javascript equivalent of Python\u0027s locals()?",
   "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using
 
+##### REST OF ANSWER
+
+
+
 """ Query 4 Answer:  """
 The table contains 4909 rows.
 
@@ -252,11 +256,16 @@ WITH RankedUsers AS (
         ROW_NUMBER() OVER (PARTITION BY TRIM(LOWER(REGEXP_EXTRACT(u.location, r'^[^,]*,'))) ORDER BY u.reputation DESC) AS rank
     FROM
         `bigquery-public-data.stackoverflow.users` u
-    WHERE
-        (LOWER(u.about_me) LIKE '%javascript%' OR LOWER(u.about_me) LIKE '% js %')
-        AND (TRIM(LOWER(u.location)) LIKE '%united states%'
-            OR TRIM(LOWER(u.location)) LIKE '%u.s.a%'
-            OR TRIM(LOWER(u.location)) LIKE '%, usa%')
+    WHERE CASE
+      WHEN LOWER(location) in ('united states', 'usa', 'us', 'u.s.', 'u.s.a')
+      THEN FALSE
+      WHEN regexp_contains(lower(location), r'(united states|usa)') AND array_length(split(u.location, ",")) = 2 AND lower(u.location) like '%city%'
+      THEN TRUE
+      WHEN regexp_contains(lower(location), r'(united states|usa)') AND array_length(split(u.location, ",")) = 3 
+      THEN TRUE
+      AND LOWER(u.about_me) like '%javascript%'
+      END
+      AND NOT regexp_contains(location, r'\d')
 )
 
 SELECT
