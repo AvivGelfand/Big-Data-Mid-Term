@@ -1,0 +1,29 @@
+Duplicating file...
+
+real	0m0.778s
+user	0m0.004s
+sys	0m0.103s
+Sorting duplicated file...
+
+real	0m2.072s
+user	0m1.311s
+sys	0m0.130s
+Compressing original file...
+  adding: stackoverflow_javascript_python_qa_clean.csv (deflated 75%)
+
+real	0m0.451s
+user	0m0.379s
+sys	0m0.012s
+Compressing duplicated file...
+updating: duplicated.csv (deflated 75%)
+
+real	0m4.093s
+user	0m3.834s
+sys	0m0.040s
+Compressing sorted duplicated file...
+  adding: duplicated_sorted.csv (deflated 96%)
+
+real	0m1.195s
+user	0m1.110s
+sys	0m0.062s
+Compression completed.

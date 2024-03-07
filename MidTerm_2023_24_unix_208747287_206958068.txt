@@ -222,41 +222,41 @@ p: 0.008953991181871866
 span: 0.004835991187060734
 
 """ Question 5 Shell Commands ($): """
-sbatch duplicate_and_zip.sh
-
+<3|1>avivgelfand@moriah-gw-01:~% sbatch duplicate_and_zip.sh
+Submitted batch job 21863146
 
 """ Question 5 Shell Output ($): """
 Submitted batch job 21454039
+
 Duplicating file...
 
-real	0m1.372s
-user	0m0.006s
-sys	0m0.107s
+real	0m0.778s
+user	0m0.004s
+sys	0m0.103s
 Sorting duplicated file...
 
-real	0m2.010s
-user	0m1.158s
-sys	0m0.122s
+real	0m2.072s
+user	0m1.311s
+sys	0m0.130s
 Compressing original file...
-  adding: stackoverflow_javascript_python_qa.csv (deflated 75%)
+  adding: stackoverflow_javascript_python_qa_clean.csv (deflated 75%)
 
-real	0m0.418s
-user	0m0.330s
-sys	0m0.004s
+real	0m0.451s
+user	0m0.379s
+sys	0m0.012s
 Compressing duplicated file...
-  adding: duplicated.csv (deflated 75%)
+updating: duplicated.csv (deflated 75%)
 
-real	0m3.475s
-user	0m3.240s
-sys	0m0.043s
+real	0m4.093s
+user	0m3.834s
+sys	0m0.040s
 Compressing sorted duplicated file...
   adding: duplicated_sorted.csv (deflated 96%)
 
-real	0m2.907s
-user	0m0.978s
-sys	0m0.073s
+real	0m1.195s
+user	0m1.110s
+sys	0m0.062s
 Compression completed.
-
 
 
 """ Question 5 Shell Answer ($): """
