@@ -174,79 +174,69 @@ In posts with the tag javascript:
 - The amount of posts and amount of answers seem to be distributed normally, peeking on the 4th day
 - The average answers per post, average views per post and average score per post only slightly changed between the days of the post.
 
+
 """ Query 4: """
-WITH RelevantQuestions AS (
-    SELECT
-        id,
-        title,
-        tags,
-        creation_date,
-        REPLACE(body, '\n', ' ') AS body
-    FROM
-        `bigquery-public-data.stackoverflow.posts_questions`
-    WHERE
-        LOWER(title) LIKE '%javascript%'
-        AND LOWER(title) LIKE '%python%'
-)
 
 SELECT
-    q.id,
-    q.title,
-    q.tags,
-    q.creation_date,
-    q.body AS question_body,
-    REPLACE(a.body, '\n', ' ') AS answer_body
+  questions.id AS q_id,
+  questions.tags AS q_tags,
+  questions.title AS q_title,
+  REPLACE(questions.body,"\n"," ") AS q_body,
+  questions.creation_date AS q_date,
+
+  response.id AS response_id,
+  REPLACE(response.body,"\n"," ") AS response_body,
+  response.tags AS response_tags,
+  response.title AS response_title,
+  response.creation_date AS response_creation_date,
 FROM
-    RelevantQuestions q
-LEFT JOIN
-    `bigquery-public-data.stackoverflow.posts_answers` a
+  bigquery-public-data.stackoverflow.posts_questions AS questions
+JOIN
+  bigquery-public-data.stackoverflow.posts_answers AS response
 ON
-    q.id = a.parent_id
+  response.parent_id = questions.id
+WHERE
+  LOWER(questions.title) LIKE '%javascript%'
+  AND LOWER(questions.title) LIKE '%python%'
+  
 ORDER BY
-    q.id
-LIMIT 5
+  questions.id
+LIMIT
+  5
 
 
 """ Query 4 Output (Json): """
+
 [{
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "creation_date": "2008-09-02 16:29:30.997000 UTC",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cp\u003eAFAIK, no. If you just want to check the existence of a given variable, you can do it by testing for it, something like this:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eif (foo) foo(); \u003c/code\u003e\u003c/pre\u003e"
+  "q_id": "39960",
+  "q_tags": "javascript|python",
+  "q_title": "Javascript equivalent of Python\u0027s locals()?",
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "q_date": "2008-09-02 16:29:30.997000 UTC",
+  "response_id": "40173",
+  "response_body": "\u003cul\u003e \u003cli\u003e\u003cp\u003elocals() - No. \u003c/p\u003e\u003c/li\u003e \u003cli\u003e\u003cp\u003eglobals() - Yes.\u003c/p\u003e\u003c/li\u003e \u003c/ul\u003e  \u003cp\u003e\u003ccode\u003ewindow\u003c/code\u003e is a reference to the global scope, like \u003ccode\u003eglobals()\u003c/code\u003e in python.\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eglobals()[\"foo\"] \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eis the same as:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003ewindow[\"foo\"] \u003c/code\u003e\u003c/pre\u003e",
+  "response_tags": null,
+  "response_title": null,
+  "response_creation_date": "2008-09-02 18:01:29.697000 UTC"
 }, {
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "creation_date": "2008-09-02 16:29:30.997000 UTC",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cp\u003e@e-bartek, I think that window[functionName] won\u0027t work if you in some closure, and the function name is local to that closure.  For example:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003efunction foo() {     var bar \u003d function () {         alert(\u0027hello world\u0027);     };     var s \u003d \u0027bar\u0027;     window[s](); // this won\u0027t work } \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIn this case, s is \u0027bar\u0027, but the function \u0027bar\u0027 only exists inside the scope of the function \u0027foo\u0027.  It is not defined in the window scope.\u003c/p\u003e  \u003cp\u003eOf course, this doesn\u0027t really answer the original question, I just wanted to chime in on this response.  I don\u0027t believe there is a way to do what the original question asked.\u003c/p\u003e"
+  "q_id": "39960",
+  "q_tags": "javascript|python",
+  "q_title": "Javascript equivalent of Python\u0027s locals()?",
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "q_date": "2008-09-02 16:29:30.997000 UTC",
+  "response_id": "39982",
+  "response_body": "\u003cp\u003eWell, I don\u0027t think that there is something like that in js. You can always use eval instead of locals(). Like this: \u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eeval(s+\"()\"); \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eYou just have to know that actually function \u003cem\u003efoo\u003c/em\u003e exists.\u003c/p\u003e  \u003cp\u003e\u003cstrong\u003eEdit:\u003c/strong\u003e\u003c/p\u003e  \u003cp\u003eDon\u0027t use eval:) Use:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar functionName\u003d\"myFunctionName\"; window[functionName](); \u003c/code\u003e\u003c/pre\u003e",
+  "response_tags": null,
+  "response_title": null,
+  "response_creation_date": "2008-09-02 16:36:28.653000 UTC"
 }, {
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "creation_date": "2008-09-02 16:29:30.997000 UTC",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cp\u003eWell, I don\u0027t think that there is something like that in js. You can always use eval instead of locals(). Like this: \u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eeval(s+\"()\"); \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eYou just have to know that actually function \u003cem\u003efoo\u003c/em\u003e exists.\u003c/p\u003e  \u003cp\u003e\u003cstrong\u003eEdit:\u003c/strong\u003e\u003c/p\u003e  \u003cp\u003eDon\u0027t use eval:) Use:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar functionName\u003d\"myFunctionName\"; window[functionName](); \u003c/code\u003e\u003c/pre\u003e"
-}, {
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "creation_date": "2008-09-02 16:29:30.997000 UTC",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cp\u003eI seem to remember Brendan Eich commented on this in a recent podcast; if i recall correctly, it\u0027s not being considered, as it adds unreasonable restrictions to optimization. He compared it to the \u003ccode\u003earguments\u003c/code\u003e local in that, while useful for varargs, its very existence removes the ability to guess at what a function will touch just by looking at its definition. \u003c/p\u003e  \u003cp\u003eBTW: i believe JS \u003cem\u003edid\u003c/em\u003e have support for accessing locals through the arguments local at one time - \u003ca href\u003d\"http://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Functions/arguments\" rel\u003d\"nofollow noreferrer\"\u003ea quick search\u003c/a\u003e shows this has been deprecated though.\u003c/p\u003e"
-}, {
-  "id": "39960",
-  "title": "Javascript equivalent of Python\u0027s locals()?",
-  "tags": "javascript|python",
-  "creation_date": "2008-09-02 16:29:30.997000 UTC",
-  "question_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e\u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); };var bar \u003d function(){ alert(\u0027bar\u0027); };var s \u003d \u0027foo\u0027;locals()[s](); // alerts \u0027foo\u0027\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
-  "answer_body": "\u003cul\u003e \u003cli\u003e\u003cp\u003elocals() - No. \u003c/p\u003e\u003c/li\u003e \u003cli\u003e\u003cp\u003eglobals() - Yes.\u003c/p\u003e\u003c/li\u003e \u003c/ul\u003e  \u003cp\u003e\u003ccode\u003ewindow\u003c/code\u003e is a reference to the global scope, like \u003ccode\u003eglobals()\u003c/code\u003e in python.\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003eglobals()[\"foo\"] \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eis the same as:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003ewindow[\"foo\"] \u003c/code\u003e\u003c/pre\u003e"
-}]
+  "q_id": "39960",
+  "q_tags": "javascript|python",
+  "q_title": "Javascript equivalent of Python\u0027s locals()?",
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using
 
 """ Query 4 Answer:  """
-The table contains 5518 rows.
+The table contains 4909 rows.
 
 
 """ Query 5: """
