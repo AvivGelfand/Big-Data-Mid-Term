@@ -52,50 +52,40 @@ limit 5
 
 """ Query 2: """
 
-SELECT
-    'All Results' AS tag_used,
-    COUNT(answer_count) AS total_posts,
-    COUNTIF(answer_count >=1) AS posts_with_answers,
-    AVG(answer_count) AS avg_answers,
-    AVG(score) AS avg_score,
-    AVG(view_count) AS avg_views_per_post
-FROM
-    `bigquery-public-data.stackoverflow.posts_questions`
-WHERE LOWER(tags) LIKE '%javascript%'
-
-UNION ALL
-
-SELECT
-    'Java Results' AS tag_used,
-    COUNT(answer_count) AS total_posts,
-    COUNTIF(answer_count >=1) AS posts_with_answers,
-    AVG(answer_count) AS avg_answers,
-    AVG(score) AS avg_score,
-    AVG(view_count) AS avg_views_per_post
-FROM
-    `bigquery-public-data.stackoverflow.posts_questions`
-WHERE
-    LOWER(tags) LIKE '%java%'
-    AND LOWER(tags) NOT LIKE '%javascript%'
-
+SELECT CASE
+  WHEN lower(tags) like '%javascript%' 
+  THEN 'javascript'
+  WHEN lower(tags) like '%java%' and lower(tags) not like '%javascript%' 
+  THEN 'java'
+END as description,
+count(*) as total_count,
+countif(answer_count > 0) as posts_with_answers,
+round(AVG(answer_count),3) as avg_answers,
+round(AVG(view_count),3) as avg_views_per_post,
+round(AVG(score),3) as avg_score
+FROM `bigquery-public-data.stackoverflow.posts_questions`
+GROUP BY description
+HAVING description is not null
 
 
 """ Query 2 Output (Json): """
+
 [{
-  "tag_used": "All Results",
-  "total_posts": "2434159",
-  "posts_with_answers": "2094314",
-  "avg_answers": "1.5549756609983156",
-  "avg_score": "2.0792754294193596",
-  "avg_views_per_post": "2859.4571028433215"
-}, {
-  "tag_used": "Java Results",
-  "total_posts": "1900935",
+  "description": "java",
+  "total_count": "1900935",
   "posts_with_answers": "1631221",
-  "avg_answers": "1.6071133415924266",
-  "avg_score": "2.2477996354425609",
-  "avg_views_per_post": "3402.1347736771654"
+  "avg_answers": "1.607",
+  "avg_views_per_post": "3402.135",
+  "avg_score": "2.248"
+}, {
+  "description": "javascript",
+  "total_count": "2434159",
+  "posts_with_answers": "2094314",
+  "avg_answers": "1.555",
+  "avg_views_per_post": "2859.457",
+  "avg_score": "2.079"
 }]
+
 
 
 
