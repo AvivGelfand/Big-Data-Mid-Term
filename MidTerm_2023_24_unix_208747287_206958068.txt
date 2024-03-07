@@ -50,37 +50,75 @@ word count:
 Char count:
 11906170
 
+
 """ Question 2 Shell Commands ($): """
 #  Count the number of different lines where the word pandas or the word numpy appears in the file
-grep -iE "pandas|numpy" stackoverflow_javascript_python_qa.csv | sort | uniq | wc -l
+grep -iE "pandas|numpy" stackoverflow_javascript_python_qa_clean.csv | sort | uniq | wc -l
 
 # count the number of different questions in which the word pandas or the word numpy appears in the body of the question in this file.
-awk -F, '{print $1 "," $4}' stackoverflow_javascript_python_qa_clean.csv | grep -iE 'pandas|numpy' | cut -d, -f1 | sort | uniq | wc -l
+awk -F'\t' 'tolower($4) ~ /numpy|pandas/ {print $1}' stackoverflow_javascript_python_qa_clean.csv | sort | uniq | wc -l
 
 
 """ Question 2 Shell Output ($): """
 lines
-90 
+139
 
 questions
-25
+75
 
 """ Question 3 Shell Commands ($): """  
 
 # split the files:
 mkdir -p splittedfiles
-awk -F '\t' 'NR>1 {split($4, date, "-"); print $0 > "splittedfiles/stackoverflow_"date[1]".csv"}' stackoverflow_javascript_python_qa_clean.csv
+awk -F'\t' 'NR > 1 {split($5, a, "-"); print > "splittedfiles/stackoverflow_questions_"a[1]".csv"}' stackoverflow_javascript_python_qa_clean.csv
 
 #count files
-ls splitedfiles/stackoverflow_*.csv | wc -l
+ls splittedfiles/stackoverflow_*.csv | wc -l
 
 # present first line for each file:
 for file in splittedfiles/stackoverflow_*.csv; do echo "File: $file"; head -n 1 $file; done
 
-for file in splitedfiles/stackoverflow_*.csv; do echo "File: $file"; head -n 1 $file; done
 
-""" Question 3 Shell Output ($): """            !
+""" Question 3 Shell Output ($): """ 
+
+15
+
 # The first line for each new file:
+for file in splittedfiles/stackoverflow_*.csv; do echo "File: $file"; head -n 1 $file; done
+File: splittedfiles/stackoverflow_questions_2008.csv
+39960   javascript|python       Javascript equivalent of Python's locals()?        "<p>In Python one can get a dictionary of all local and global variables in the current scope with the built-in functions <code>locals()</code> and <code>globals()</code>.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:</p>  <pre><code>var foo = function(){ alert('foo'); }; var bar = function(){ alert('bar'); };  var s = 'foo'; locals()[s](); // alerts 'foo' </code></pre>  <p>Is this at all possible, or should I just be using a local object for the lookup?</p>"       2008-09-02 16:29:30.997 UTC        39982   "<p>Well, I don't think that there is something like that in js. You can always use eval instead of locals(). Like this: </p>  <pre><code>eval(s+""()""); </code></pre>  <p>You just have to know that actually function <em>foo</em> exists.</p>  <p><strong>Edit:</strong></p>  <p>Don't use eval:) Use:</p>  <pre><code>var functionName=""myFunctionName""; window[functionName](); </code></pre>"                       2008-09-02 16:36:28.653 UTC        
+File: splittedfiles/stackoverflow_questions_2009.csv       
+455580  javascript|python|json  JSON datetime between Python and JavaScript        "<p>I want to send a datetime.datetime object in serialized form from Python using <a href=""http://en.wikipedia.org/wiki/JSON"" rel=""noreferrer"">JSON</a> and de-serialize in JavaScript using JSON. What is the best way to do this?</p>"       2009-01-18 17:51:11.843 UT53178373 "<p>Apparently <a href=""https://stackoverflow.com/questions/10286204/the-right-json-date-format#15952652"">The “right” JSON (well JavaScript) date format</a> is 2012-04-23T18:25:43.511Z - UTC and ""Z"".  Without this JavaScript will use the web browser's local timezone when creating a Date() object from the string.</p>  <p>For a ""naive"" time (what Python calls a time with no timezone and this assumes is local) the below will <a href=""https://stackoverflow.com/questions/2720319/python-figure-out-local-timezone"">force local timezone</a> so that it can then be correctly converted to UTC:</p>  <pre><code>def default(obj):     if hasattr(obj, ""json"") and callable(getattr(obj, ""json"")):         return obj.json()     if hasattr(obj, ""isoformat"") and callable(getattr(obj, ""isoformat"")):         # date/time objects         if not obj.utcoffset():             # add local timezone to ""naive"" local time             # https://stackoverflow.com/questions/2720319/python-figure-out-local-timezone             tzinfo = datetime.now(timezone.utc).astimezone().tzinfo             obj = obj.replace(tzinfo=tzinfo)         # convert to UTC         obj = obj.astimezone(timezone.utc)         # strip the UTC offset         
+obj = obj.replace(tzinfo=None)         return obj.isoformat() + ""Z""     elif hasattr(obj, ""__str__"") and callable(getattr(obj, ""__str__"")):         return str(obj)     else:         print(""obj:"", obj)         raise TypeError(obj)  def dump(j, io):     json.dump(j, io, indent=2, default=default) </code></pre>  <p>why is this so hard.</p>"      2018-11-06 19:04:42.37 UTC
+File: splittedfiles/stackoverflow_questions_2010.csv       
+2001796 javascript|python|yacc|lex|tokenize     Javascript lexer / tokenizer (in Python?)  "<p>Does anyone know of a Javascript lexical analyzer or tokenizer (preferably in Python?)</p>  <p>Basically, given an arbitrary Javascript file, I want to grab the tokens.</p>  <p>e.g.</p>  <p>foo = 1</p>  <p>becomes something like:</p>  <ol> <li>variable name : ""foo""</li> <li>whitespace</li> <li>operator : equals</li> <li>whitespace</li> <li>integer : 1</li> </ol>"       2010-01-04 19:57:30.48 UTC 2003418 "<p><a href=""http://code.google.com/p/pynarcissus/"" rel=""nofollow noreferrer"">http://code.google.com/p/pynarcissus/</a> has one.</p>  <p>Also I made one but it doesn't support automatic semicolon insertion so it is pretty useless for javascript that you have no control over (as almost all real life javascript programs lack at least one semicolon) :) Here is mine:</p>  <p><a href=""http://bitbucket.org/santagada/jaspyon/src/tip/jaspyon/"" rel=""nofollow noreferrer"">http://bitbucket.org/santagada/jaspyon/src/tip/jaspyon/</a></p>  <p>the grammar is in jsgrammar.txt, it is parsed by the PyPy parsing lib (which you will have to download and extract from the pypy source) and it build a parse tree which I walk on astbuilder.py</p>  <p>But if you don't have licensing problems I would go with pynarcissus. heres a direct link to look at the code (ported from narcissus):</p>  <p><a href=""http://code.google.com/p/pynarcissus/source/browse/trunk/jsparser.py"" rel=""nofollow noreferrer"">http://code.google.com/p/pynarcissus/source/browse/trunk/jsparser.py</a></p>"                2010-01-05 00:45:18.293 UTC
+File: splittedfiles/stackoverflow_questions_2011.csv       
+4591318 javascript|python|templates|google-closure-templates       Templating system for both Python and Javascript? "<p>A nice feature of Google's Soy templates is that you can use the same templates on the client (JS) and on the server (Java).</p>  <p>Currently I plan to render most pages client-side using Soy templates compiled to JS. However, my backend is written in Python (using Tornado), so I can't easily use the same templates server-side to generate emails or static pages.</p>  <p>I could render these soy templates using a separate Java component on the server side, or perhaps even get them working in node.js. Neither of those options seem particularly clean.</p>  <p>Are there any good templating engines that run both in JS and Python? Has anyone had good results with JSON-Template or Tenjin? Any other ideas?</p>"        2011-01-04 07:03:39.223 UTC     23042966  "<p>I realize this is a very old question but for the reference, it is now possible to compile Soy templates to Python code.</p>  <p><a href=""https://pypi.python.org/pypi/soy"" rel=""nofollow"">https://pypi.python.org/pypi/soy</a></p>"2014-04-13 12:50:51.157 UTC
+File: splittedfiles/stackoverflow_questions_2012.csv
+8703945 javascript|python|selenium|download     Download a file from a site (partly written in Javascript) using Python       "<p>I'm trying to use Python to download a voice file (mp3) from <a href=""http://ivona.com/pl/"" rel=""nofollow noreferrer"">this</a> site:</p>  <p>I've tried to use mechanize and twill but I haven't got the proper result. I've heard about selenium as well. Anyway, I don't even know if it makes sense technically (mechanize + Javascript).</p>  <p>I was looking for an answer and finally I've found this <a href=""https://stackoverflow.com/a/8289068/1126604"">solution</a>.</p>  <p>It seems like a similar problem to mine but I have absoutely no idea what should I put instead of the 4th line.</p>  <p>If you have any proposition (maybe completely different to mine) I'll be glad to see it.</p>" 2012-01-02 18:12:46.143 UTC        8704187 "<p><em>(Moving to answer to get more space)</em></p>  <p>Thanks for pointing me to selenium, I didn't know that and it looks cool; anyways: I had a quick look and the js seems to fire an ajax request, that yields no apparent result -- I guess the audio transfer is done some way in the background via flash or so; anyways: what about using the service they offer: developer.ivona.com instead of trying hacking your webservice out of the demo interface..?</p>  <p>Anyways, here it is the hacked web-service you asked for:</p>  <p>This is the URL you want to GET:</p>  <pre><code>""http://www.ivona.com/voicetest.php?rtr=1&amp;t2r=%(the_text)s..&amp;v2r=dXNfc2FsbGk.&amp;lang=us"" % dict(     the_text=base64.b64encode(""Hello, world!""),     the_voice=base64.b64encode(""us_salli""),     ) </code></pre>  <p>You can test that with, for example, mplayer:</p>  <pre><code>mplayer ""http://www.ivona.com/voicetest.php?rtr=1&amp;t2r=SGVsbG8sIHdvcmxkIQ==..&amp;v2r=dXNfc2FsbGk.&amp;lang=us"" </code></pre>  <p>And, from Python, use urllib to retrieve and store somewhere.</p>  <p>Beware that, since this is an unauthorized use, you might get blocked / incur in legal issues / etc. -- don't use in a production application!</p>"                 2012-01-02 18:38:19.95 UTC
+File: splittedfiles/stackoverflow_questions_2013.csv
+14124757        javascript      JavaScript equivalent to Python's import?  "<blockquote>   <p><strong>Possible Duplicate:</strong><br>   <a href=""https://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file"">Include JavaScript file inside JavaScript file?</a>  </p> </blockquote>    <p>Is there any way to simply import a JavaScript library into a JavaScript file?</p>  <p>In Python, you can simply do this:</p>  <pre><code>import math </code></pre>  <p>Is there anything similar in JavaScript?</p>"2013-01-02 15:40:13.3 UTC        14124856        "<p>You can have a look at this question (and the answers as well...) : <a href=""https://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file"">How do I include a JavaScript file in another JavaScript file?</a></p>  <p>I especially like the <a href=""http://api.jquery.com/jQuery.getScript/"" rel=""nofollow noreferrer"">getScript()</a> function of jQuery : </p>  <pre><code>$.getScript(""my_lovely_script.js"", function(){    alert(""Script loaded and executed."");    // here you can use anything you defined in the loaded script }); </code></pre>"                  2013-01-02 15:45:44.453 UTC
+File: splittedfiles/stackoverflow_questions_2014.csv       
+20890687        javascript|python       Is there a python strip function equivalent in javascript? "<p>Python's strip function is used to remove given characters from the beginning and end of the string. How to create a similar function in javascript?</p>  <p>Example:</p>  <pre><code>str = ""'^$   *# smart kitty &amp;  ''^$*   '^""; newStr = str.strip("" '^$*#&amp;""); console.log(newStr); </code></pre>  <p>Output:</p>  <pre><code>smart kitty </code></pre>"        2014-01-02 19:51:19.217 UTC        20890733        "<p>Not exactly... I would use regex for complicated string manipulation or the Slice() method to remove characters at certain points <a href=""http://www.w3schools.com/jsref/jsref_slice_string.asp"" rel=""nofollow"">Slice() explained</a></p>"   2014-01-02 19:54:29.717 UTC
+File: splittedfiles/stackoverflow_questions_2015.csv       
+27917471        javascript|python|flask Pass parameter with Python Flask in external Javascript    "<p>I use Python Flask for my website and I pass several parameters to Javascript. This is my code:</p>  <pre><code>from flask import Flask from flask import render_template  app = Flask(__name__)   @app.route(""/"") def index():      return render_template(""index.html"", param1=""Hello"")   &lt;html&gt;    &lt;head&gt;    &lt;/head&gt;    &lt;body&gt;       &lt;p&gt;Hello World&lt;/p&gt;    &lt;/body&gt;    &lt;script&gt;console.log({{param1}})&lt;/script&gt; &lt;/html&gt; </code></pre>  <p>With this way, it works without a problem. The example is a simplified of my own. But, if I want to have the script on an external file and call it like this:</p>  <pre><code>&lt;html&gt;    &lt;head&gt;    &lt;/head&gt;    &lt;body&gt;       &lt;p&gt;Hello World&lt;/p&gt;    &lt;/body&gt;    &lt;script src=""/static/js/myjs.js""&gt;&lt;/script&gt; &lt;/html&gt; </code></pre>  <p>And the <code>myjs.js</code> file is the <code>console.log({{param1}})</code>, then it doesn't work. So, is there any way to pass parameters in external Javascript files with Python Flask?</p>"    2015-01-13 08:08:05.943 UTC        40097389        "<p>I used a different way to load a javascript file specified in html page:</p>  <p>Firstly, I define some variables inside <code>&lt;head&gt;&lt;/head&gt;</code> tags, and so I call my javascript file:</p>  <pre><code>&lt;head&gt; ... &lt;script src=""/static/js/jquery.js""&gt;&lt;/script&gt; &lt;script  type=text/javascript&gt;     $(document).ready(function() {         $link_subcat = ""{{ url_for('load_subcategories') }}"";         $link_cat = ""{{ url_for('load_categories') }}"";     }); &lt;/script&gt;  &lt;script src=""{{ url_for('static', filename='finances.js') }}""&gt;&lt;/script&gt; ... </code></pre>  <p>This is my javascript file content:</p>  <pre><code>$(document).ready(function() {      $(""#category"").change(function() {         $.ajax({             type: ""POST"",             url: $link_subcat,             data: {cat: $(this).val()},             success: function(data) {                 $(""#subcategory"").html(data);             }         });     });      $(""input[name=type]"").change(function() {         $.ajax({             type: ""POST"",             url: $link_cat,             data: {type: $('input[name=""type""]:checked').val()},             success: function(data) {                 $(""#category"").html(data);             }         });     });  }); </code></pre>  <p>This approach works for me.</p>"                    2016-10-17 23:49:59.1 UTC
+File: splittedfiles/stackoverflow_questions_2016.csv       
+34608402        javascript|python|mechanize|csrf        Python/mechanize on javascript page with csrf      "<p>I want to use python/mechanize to control my modem/router box. While I can login and navigate through the menus, I am not able to change any value (browser submit has no effect). The pages use javascript, but I think that I did the equivalent with mechanize in my script. Can it be it because of the <em>antiCSRF.js</em> file inclusion that prevents me to change any value?</p>  <p>The html/js code of the page:</p>  <pre><code>&lt;head&gt; &lt;script type=""text/javascript""&gt;         function main_reboot_button()         {          
+   var confrm = confirm(""Do you want to continue..."")             if(confrm){                          document.getElementById(""main_reboot"").value = ""1"";                 
+document.getElementById(""main-reboot-form"").submit();                 return false;             }             else {                 return false;             }         } &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;div class=""panel-body panel-align""&gt; &lt;div class=""panel panel-default accor_brd accor_brd_RB_Curved content_blk""&gt;   &lt;form method=""post"" action=""bbox-maintenance.lp"" id=""main-reboot-form"" style=""padding-top:20px;""&gt;   &lt;div class=""control_blk clearfix""&gt;     &lt;input type=""hidden"" name= ""main_reboot"" id=""main_reboot"" value=""0""&gt;&lt;/input&gt;     &lt;label for=""input01"" class=""control-label txt-head""&gt;Reboot Modem&lt;/label&gt;     &lt;button class=""btn_proximus_standalone"" onclick='return main_reboot_button()'&gt;Restart&lt;/button&gt;   &lt;/div&gt;   &lt;/form&gt;  &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;script type='text/javascript' src='js/antiCSRF.js'&gt;&lt;/script&gt; </code></pre>  <p>The antiCSRF.js file:</p>  <pre><code>function readCookie(name) {   var nameEQ = name + ""="";   var ca = document.cookie.split(';');   for(var i=0;i &lt; ca.length;i++) {     var c = ca[i];     while (c.charAt(0)==' ') c = c.substring(1,c.length);     if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);   }  return null; } var forms=document.getElementsByTagName(""form""); var rn = readCookie('xAuth_SESSION_ID'); for (var i=0; i&lt;forms.length; i++) {   var temp = document.createElement(""INPUT"");   temp.type = ""hidden"";   temp.name = ""rn"";   temp.value = rn;   forms[i].insertBefore(temp, forms[i].firstChild); } </code></pre>  <p>The part of the python code I use to make the request (after login stuff):</p>  <pre><code>browser.open(""http://192.168.1.1/bbox-maintenance.lp"")     browser.select_form(nr = 0) browser.form.find_control(""main_reboot"").readonly = False browser.form['main_reboot'] = ""1"" browser.submit() </code></pre>  <p>As a result, the box is not rebooted while it should have been. The python script shows no error.</p>"  2016-01-05 09:40:14.09 UTC 34613152        "<p>I finally found the solution (by understanding better how works antiCSRF). I need to read the cookie value, add a new element with name 'rn' to the form and set it to the cookie value.</p>  <p>Adding those lines after browser.select_form does the trick:</p>  <pre><code>browser.form.new_control('text','rn',{'value':''}) browser.form.fixup() browser.form['rn'] = cj[0].value  </code></pre>"                   2016-01-05 13:41:57.467 UTC
+File: splittedfiles/stackoverflow_questions_2017.csv       
+41413634        javascript|node.js|tornado|operational-transform   Integration of ServerSide Javascript with Python  "<p>I am building a web app which uses a JSON array to save and transfer state between server and client and vice versa.  I'm attempting to add 'collaboration' capabilities to it such it that multiple clients can simultaneously edit the json data without causing conflicts and with the data being updated on all clients in real time.  </p>  <p>On the backend I'm using python so I was very happy to find the <a href=""https://github.com/opencoweb/coweb"" rel=""nofollow noreferrer"">opencoweb</a> project, sadly it is no longer being maintained.  Similarly, I've found <a href=""https://github.com/share/sharedb"" rel=""nofollow noreferrer"">ShareDB</a> and it seems like a very neat project!  I would like to spin up ShareDB on my server side from my Python code but am unsure as to what the best approach to running javascript code server side would be.  At this point, I'm considering just running it with node from the command line, but wondering whether it would make more sense to use a python library which can allow the running of javascript (Js2Py or something similar).  So this brings me to my question, on the server side is there a 'recommended' approach to integrating javascript into your server side code base when using python (tornado) for your main framework?</p>"     2017-01-01 05:49:17.947 UTC        41432455        "<p>I believe I've come up with an answer to my own question.  It seems like this question has been discussed here prior, where the recommendation was to use sockets, and the recommendation of using zerorpc got alot of up-votes.  So in my case, I would likely be running the ShareDB as a service which I would be calling from Python using zerorpc.  Hopefully this helps someone else in my shoes!</p>"                     2017-01-02 19:41:09.213 UTC
+File: splittedfiles/stackoverflow_questions_2018.csv       
+48098631        javascript|python|object|dictionary     Python dictionary to Javascript object     "<p>I want to find how many times a character is given in string.</p>  <p>Python codes works</p>  <pre><code>def func(a): d={} for ch in a:     if ch in d:         d[ch] += 1     else:         d[ch] = 1 print d </code></pre>  <p>and javascript</p>  <p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false""> <div class=""snippet-code""> <pre class=""snippet-code-js lang-js prettyprint-override""><code>function how_many_times(string) {   object = {};   for (var i in string) {     if (i in object) {       object[i] += 1     } else {       object[i] = 1     }   }      console.log(object) }  how_many_times('Hello, World !')</code></pre> </div> </div> </p>  <p>When I try to pass this to javascript, I don't get the same result. I tried like this because I read python dictionary and javascript object are very similar. I know I can solve problem with other ways but <strong>I want to learn why it doesn't work in objects</strong>.</p>"  2018-01-04 15:38:46.37 UTC      48098674   "<p>You could use <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of"" rel=""nofollow noreferrer""><code>of</code></a> instead of <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in"" rel=""nofollow noreferrer""><code>in</code></a> for the iteration.</p>  <p>The <code>for ... in</code> statement iterates over the keys of an object. The final result is an object with all indices and the count of one instead of getting the character and the count of it.</p>  <p>A possible workaround without <code>in</code> could be the use of the index as accessor for the wanted value, like <code>string[i]</code>.</p>  <p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false""> <div class=""snippet-code""> <pre class=""snippet-code-js lang-js prettyprint-override""><code>function how_many_times(string) {     var object = {},         i;      for (i of string) {         if (i in object) {             object[i] += 1;         } else {             object[i] = 1;         }     }     console.log(object) }  how_many_times('Hello, World !')</code></pre> </div> </div> </p>"                       2018-01-04 15:41:09.77 UTC
+File: splittedfiles/stackoverflow_questions_2019.csv
+53992898        javascript|python|node.js|websocket     How to communicate between websocets using javascript as client and python as web server      <p>I have connected my web server and client its working. Now I want to call variables that's passing from backend and do a counting</p>  <p>for example: backend python is passing 2 variables called price of an apple and no.of apples I need to count the price of all apples and print it in client side using javascript</p>  <p>Any help is appreciated</p>        2019-01-01 03:49:47.323 UTC        53993381        "<p>In my case I have done with this approach,</p>  <ul> <li>I have created one JS file for WebSocket event handling methods(onOpen,onClose and onMessage) which is loaded on home page loading.</li> <li>In this file I have created one reference variable to hold events of WebSockets using (.prototype)</li> <li>Same like second step created two seperate methods for creating connection which is going to be called from home page and one connect method to connect the server</li> <li>In onMessage you can call your business method where you can put your logic</li> </ul>  <p>code look like,</p>  <pre><code>var _wObj = null; function WSSocket(tObj) {     //basic properties } </code></pre>  <p>create connection</p>  <pre><code>WSSocket.createConnection = function ( tObj ) {     if (!_wObj) {         _wObj = new WSSocket(tObj);     }     return _wObj; } </code></pre>  <p>connect to server</p>  <pre><code>WSSocket.prototype.connect = function () {     //connection logic } </code></pre>  <p>register events</p>  <pre><code>WSSocket.prototype.registerEvents = function () {         //registering logic         this.wObj.onmessage = function (event) {              //call your operation method         } } </code></pre>"                    2019-01-01 06:10:36.353 UTC
+File: splittedfiles/stackoverflow_questions_2020.csv       
+59552659        javascript|python|list|flask|knockout.js  Python List to Javascript Observable Array       "<p>So I am implementing an API through Python Flask. My code structure is something like the following:</p>  <pre><code>src/ |--&gt; main.py |--&gt; api/ |     |--&gt; users.py |--&gt; static/       |--&gt; index.html </code></pre>  <p>Inside <code>users.py</code> I have a list called <code>user_list</code>. The thing is I want to perform some operations with that list, for which I want to make it an Observable Array to and handle it in <code>index.html</code>. Speaking roughly, I do not know how to send that list from <code>users.py</code> to <code>index.html</code> through <code>main.py</code> (which handles the whole API).</p>  <p>I am really lost on how to do this, as I do not understand JavaScript's Observable Arrays at all.</p>"      2020-01-01 12:49:21.817 UT59552780 "<p>To pre-populate an observable array, pass an array to the <code>ko.observableArray</code> function. To pass an array from Flask code through the template to JavaScript, use Flask's <code>tojson</code> filter. Thus, in the template:</p>  <pre><code>&lt;script&gt;   const userList = ko.observableArray({{ user_list | tojson }}); &lt;/script&gt; </code></pre>  <p>It is impossible to do this in a static file, for obvious reasons (you want some dynamic content injected into it). An alternative that <em>would</em> work with a static <code>index.html</code> would be to populate your observable array via AJAX, but since you provided no code, it is hard to tell you exactly how to do it.</p>"     2020-01-01 13:05:08.763 UTC
+File: splittedfiles/stackoverflow_questions_2021.csv
+65540240        javascript|python|communication|wikipedia|eel      How to communicate between multiple javascript files in python eel "<p>I am trying to make a HTML app using eel. In this app I have two javascript files and want to make communication between my python main.py file. It will get a string from &quot;show()&quot; and &quot;show2()&quot;.The string from &quot;show()&quot; will go to my &quot;script.js&quot; file and the string from &quot;show2()&quot; will go to &quot;script2.js&quot;.I am able to get strings from &quot;show()&quot; but not from show2(). Only one javascript file is working and the other is not working. Can someone please help me with it?</p> <p>Here is my python &quot;main.py&quot; code:</p> <pre><code>import eel import time import wikipedia import socket import os import pyttsx3 import webbrowser import datetime import sound  engine= pyttsx3.init(&quot;sapi5&quot;) en_id = &quot;HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_Cortana&quot; engine.setProperty(&quot;voice&quot;,en_id) def say(audio):     engine.say(audio)     engine.runAndWait()  @eel.expose def show(text):     user=text.lower()          if &quot;hello&quot; in user or &quot;hey&quot; in user:         
+ans=&quot;Hello, how can I help you?&quot;         time.sleep(0.5)         eel.boxes2(ans)         say(ans) @eel.expose def show2(text2):     print(text2)     eel.boxes3(&quot;hello&quot;)    eel.init(&quot;eel&quot;) eel.start(&quot;index.html&quot;,size=(460,660)) </code></pre> <p>And here is my &quot;script.js&quot; file. This file is working:</p> <pre><code>var nav=document.getElementById(&quot;content&quot;); var textbox=document.getElementById(&quot;input&quot;);  var tag=document.createElement(&quot;i&quot;);  textbox.onclick=function(){     nav.style.display=&quot;none&quot;;  } eel.expose(boxes2); function boxes2(reply){     var tag=document.createElement(&quot;a&quot;);     var text=document.createTextNode(reply);     tag.appendChild(text);     var element=document.getElementById(&quot;box2&quot;);     element.appendChild(tag); }   function boxes(){     var textbox=document.getElementById(&quot;input&quot;);      text= textbox.value;     eel.show(text)     var cover=document.createElement(&quot;p&quot;);     var tag=document.createElement(&quot;i&quot;);     var text=document.createTextNode(text);     tag.appendChild(text);     cover.appendChild(tag);     var element=document.getElementById(&quot;box2&quot;);     element.appendChild(cover);     textbox.value=&quot;&quot;;      } var sub = document.getElementById(&quot;send&quot;);   sub.onclick=function(){     boxes();     boxes2(reply);  } </code></pre> <p>And here is my &quot;script2.js&quot;. This is the file which is not working in python eel:</p> <pre><code>eel.expose(boxes3) function boxes3(reply2){     eel.show2(&quot;bye&quot;)     var tag=document.createElement(&quot;p&quot;);     var text=document.createTextNode(reply2);     tag.appendChild(text);     var element=document.getElementById(&quot;box2&quot;);     element.appendChild(tag); }  var sub2 = document.getElementById(&quot;hello&quot;);   sub2.onclick=function(){     boxes3(reply2);  } </code></pre> <p>Here is my index.html code:</p> <pre><code>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt;     &lt;meta charset=&quot;UTF-8&quot;&gt;     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no&quot;&gt;     &lt;title&gt;Aurora&lt;/title&gt;     &lt;link rel=&quot;Icon&quot; href=&quot;logo.ico&quot; type=&quot;png&quot; hreflang=&quot;en&quot;&gt;     &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;      &lt;/head&gt; &lt;body&gt;     &lt;div style=&quot;background-color: blanchedalmond; width: 500px; height: 30px; position: fixed; top: 0;&quot;&gt;         &lt;label id=&quot;options&quot; title=&quot;options&quot;&gt;...&lt;/label&gt;         &lt;button id=&quot;hello&quot; &gt;hello&lt;/button&gt;     &lt;/div&gt;     &lt;div style=&quot;width: max-content; height: 630px; overflow-y: scroll; overflow-x: hidden;scroll-behavior: auto;&quot;&gt;         &lt;div id=&quot;box2&quot; style=&quot;width: 470px;  height: max-content; margin-top: 35pt;margin-left: 20px;&quot;&gt;&lt;/div&gt;     &lt;/div&gt;          &lt;div id=&quot;content&quot;&gt;         &lt;label id=&quot;close&quot; title=&quot;close&quot;&gt;×&lt;/label&gt;         &lt;h1 style=&quot;font-family: segoe ui; position: relative; top: -50px;left: 10px; font-weight: 300;&quot;&gt;Aurora&lt;/h1&gt;         &lt;button style=&quot;width: 100%; font-size: 15pt; text-align: left; position: relative; top: 220pt; border:none; padding: 7pt;outline: none; &quot; id=&quot;settings&quot;&gt;Settings&lt;/button&gt;         &lt;button style=&quot;width: 100%; font-size: 15pt; text-align: left; position: relative; top: 220pt; border: none; padding: 7pt;outline: none;  &quot; id=&quot;settings&quot;&gt;About&lt;/button&gt;         &lt;button style=&quot;width: 100%; font-size: 15pt; text-align: left; position: relative; top: 220pt; border: none; padding: 7pt;outline: none;  &quot; id=&quot;settings&quot;&gt;Commands&lt;/button&gt;     &lt;/div&gt;          &lt;div id=&quot;user-input&quot;&gt;         &lt;form&gt;             &lt;textarea id=&quot;input&quot; placeholder=&quot;Ask me something&quot; title=&quot;ask aurora&quot;&gt;&lt;/textarea&gt;         &lt;/form&gt;         &lt;button id=&quot;send&quot; title=&quot;send text&quot;&gt;Send&lt;/button&gt;     &lt;/div&gt;     &lt;script src=&quot;eel.js&quot;&gt;&lt;/script&gt;     &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;     &lt;script src=&quot;script2.js&quot;&gt;&lt;/script&gt;           &lt;/body&gt; &lt;/html&gt; </code></pre> <p>Please help me!!!</p>"    2021-01-02 14:34:18.13 UTC      65547559        "<p>all functions decorated with @eel.expose must be between eel.init and eel.start.</p> <p>Try using the following line:</p> <pre><code>eel.init('eel', allowed_extensions=['.js', '.html']) </code></pre> <p>This will look for exposed functions in all js and html files contained in your eel folder.</p>"                   2021-01-03 07:25:37.867 UTC
+File: splittedfiles/stackoverflow_questions_2022.csv       
+70555689        javascript|python|django        How to convert javascript object to python readable        "<p>I'm trying to parse below object from javascript post data into python using ast.literal_eval(obj) but ending up into below error</p> <p>Error:</p> <pre><code>malformed node or string: &lt;_ast.Name object at 0x7fb484eb8070&gt; </code></pre> <p>Object Value:</p> <pre><code>'[{&quot;dose&quot;:&quot;1&quot;,&quot;duration&quot;:&quot;2&quot;,&quot;name&quot;:&quot;Item1&quot;,&quot;code&quot;:&quot;pharma2&quot;,&quot;usage&quot;:{&quot;morning&quot;:true,&quot;afternoon&quot;:false,&quot;evening&quot;:false,&quot;night&quot;:false,&quot;sos&quot;:false}},{&quot;dose&quot;:&quot;1&quot;,&quot;duration&quot;:&quot;4&quot;,&quot;name&quot;:&quot;Item2&quot;,&quot;code&quot;:&quot;pharma1&quot;,&quot;usage&quot;:{&quot;morning&quot;:false,&quot;afternoon&quot;:false,&quot;evening&quot;:false,&quot;night&quot;:true,&quot;sos&quot;:false}}]' </code></pre>"   2022-01-02 11:49:13.033 UT70555749 "<p><a href=""https://github.com/dmeranda/demjson"" rel=""nofollow noreferrer"">demjson.decode()</a></p> <pre><code>import demjson  jsObject = '{&quot;dose&quot;:&quot;1&quot;,&quot;duration&quot;:&quot;2&quot;,&quot;name&quot;:&quot;Item1&quot;,&quot;code&quot;:&quot;pharma2&quot;,&quot;usage&quot;:{&quot;morning&quot;:true,&quot;afternoon&quot;:false,&quot;evening&quot;:false,&quot;night&quot;:false,&quot;sos&quot;:false}},{&quot;dose&quot;:&quot;1&quot;,&quot;duration&quot;:&quot;4&quot;,&quot;name&quot;:&quot;Item2&quot;,&quot;code&quot;:&quot;pharma1&quot;,&quot;usage&quot;:{&quot;morning&quot;:false,&quot;afternoon&quot;:false,&quot;evening&quot;:false,&quot;night&quot;:true,&quot;sos&quot;:false}}'  pythonObject = demjson.decode(jsObject) </code></pre>"                     2022-01-02 11:57:23.26 UTC 
 
 
 """ Question 4 Shell Commands ($): """
@@ -92,91 +130,96 @@ done
 
 """ Question 4 Shell Output ($): """
 
-Processing file: stackoverflow_2008.csv
-self: 0.012691720206470658
-lt: 0.009939592490462154
-gt: 0.00923902435909284
-d: 0.007869698222239607
-code: 0.007825477237646067
-Processing file: stackoverflow_2009.csv
-a: 0.008984778897417056
-lt: 0.008935661399234109
-python: 0.007563473997305987
-code: 0.007424077071205095
-gt: 0.007414441816005021
-Processing file: stackoverflow_2010.csv
-a: 0.009898635183277962
-code: 0.009282040549342233
-p: 0.009222252921641458
-pre: 0.005057079540193061
-quot: 0.00501558099466482
-Processing file: stackoverflow_2011.csv
-p: 0.006933404177786026
-a: 0.005668421217197916
-quot: 0.005235093458448748
-javascript: 0.004658279179259253
-python: 0.00414766091146755
-Processing file: stackoverflow_2012.csv
-quot: 0.0063289938931296395
-p: 0.005801803473094766
-a: 0.005587891335167992
-to: 0.003668855393597112
-javascript: 0.003446376971634685
-Processing file: stackoverflow_2013.csv
-quot: 0.003980090589588397
-2013: 0.0033043960055599976
-lt: 0.003186035343580464
-p: 0.002942149777499674
-to: 0.002414510245245246
-Processing file: stackoverflow_2014.csv
-quot: 0.005689855564701157
-p: 0.0036308765369426482
-2014: 0.0034468494696931
-0: 0.0024303240591130714
-a: 0.0022339029317870705
-Processing file: stackoverflow_2015.csv
-quot: 0.006009058957520198
-code: 0.0037474374926280765
-2015: 0.003516112583710796
-p: 0.002252095834675061
-pre: 0.0019811853402892116
-Processing file: stackoverflow_2016.csv
-lt: 0.004910217389957592
-p: 0.0048193079765474905
-2016: 0.004413399285613192
-quot: 0.00364348219753756
-amp: 0.0034780821949717978
-Processing file: stackoverflow_2017.csv
-lt: 0.008184682210779292
-gt: 0.007981443506215415
-quot: 0.006475133583066861
-t: 0.005443064195400174
-p: 0.0037466505489010815
-Processing file: stackoverflow_2018.csv
-quot: 0.005052420924999344
-a: 0.0037086823357841622
-p: 0.0031497076870838636
-javascript: 0.003020084830835176
-u: 0.0027936133995565982
-Processing file: stackoverflow_2019.csv
-quot: 0.00343671225367028
-code: 0.002704400987745652
-2019: 0.002695055254757267
-gt: 0.002561621974696296
-javascript: 0.002335560761432409
-Processing file: stackoverflow_2020.csv
-quot: 0.030944575302543246
-p: 0.004716400318348177
-a: 0.004530479274174094
-2020: 0.002571714668829774
-the: 0.0024812313460500085
-Processing file: stackoverflow_2021.csv
-quot: 0.03479037711374849
-code: 0.005422464299506775
-let: 0.0040229326272213095
-request: 0.0038489498130597653
-0: 0.003524271919083802
-
+Processing file: stackoverflow_questions_2008.csv
+quot: 0.012599668441066532
+self: 0.012560967498229055
+lt: 0.010889189710864954
+gt: 0.010069104387067016
+d: 0.007714968690392756
+Processing file: stackoverflow_questions_2009.csv
+quot: 0.014422498159057323
+lt: 0.009923035298128265
+a: 0.009304465071410514
+gt: 0.008325790982987935
+python: 0.007649395663328647
+Processing file: stackoverflow_questions_2010.csv
+quot: 0.013763854395808846
+a: 0.010286412126861853
+p: 0.00993259907139727
+code: 0.00890557814909787
+2010: 0.006551130222222737
+Processing file: stackoverflow_questions_2011.csv
+quot: 0.01397668492727316
+p: 0.007718063899499063
+a: 0.006183698787619509
+2011: 0.005596351090397769
+javascript: 0.004955492725180824
+Processing file: stackoverflow_questions_2012.csv
+quot: 0.015036820415320621
+p: 0.006750736787995093
+a: 0.006181142119663793
+2012: 0.005847067792115678
+to: 0.004008500716829795
+Processing file: stackoverflow_questions_2013.csv
+quot: 0.01273622806027172
+2013: 0.005442391722832528
+lt: 0.0042790169423401045
+p: 0.004157936535878169
+to: 0.002877900732138689
+Processing file: stackoverflow_questions_2014.csv
+quot: 0.014410779807529452
+2014: 0.005735142979367578
+p: 0.0047562090894647455
+a: 0.00297829328716254
+lt: 0.0024399380664043412
+Processing file: stackoverflow_questions_2015.csv
+quot: 0.014721385162594183
+2015: 0.005682529897022991
+code: 0.0039698795291382045
+p: 0.0034537940015519145
+javascript: 0.0022402934807631905
+Processing file: stackoverflow_questions_2016.csv
+quot: 0.012396130984963442
+2016: 0.0063211420992370145
+lt: 0.00368965603812829
+p: 0.003315730256938196
+amp: 0.003132339009218306
+Processing file: stackoverflow_questions_2017.csv
+quot: 0.015174926998847989
+lt: 0.006892098427586485
+gt: 0.0068490719583439025
+t: 0.005542724869590073
+2017: 0.004619936586944248
+Processing file: stackoverflow_questions_2018.csv
+quot: 0.0137768052759857
+2018: 0.004202715529491603
+u: 0.0028940781912452527
+a: 0.002720424221489815
+1: 0.0027093745557247965
+Processing file: stackoverflow_questions_2019.csv
+quot: 0.01219576788109202
+2019: 0.004796894172510604
+gt: 0.003491684783630029
+code: 0.0030553651259804145
+lt: 0.0026173761442522883
+Processing file: stackoverflow_questions_2020.csv
+quot: 0.021528465492927435
+2020: 0.004542564030898236
+a: 0.0035491619180870113
+p: 0.0032282301233088617
+gt: 0.0028065288277307927
+Processing file: stackoverflow_questions_2021.csv
+quot: 0.053244335804092435
+p: 0.00581387821403221
+a: 0.004821811875933783
+2021: 0.004402099427150895
+amp: 0.003131111144868743
+Processing file: stackoverflow_questions_2022.csv
+quot: 0.04336121047634825
+lt: 0.016767189483196436
+gt: 0.015661507103494426
+p: 0.008953991181871866
+span: 0.004835991187060734
 
 """ Question 5 Shell Commands ($): """
 sbatch duplicate_and_zip.sh
