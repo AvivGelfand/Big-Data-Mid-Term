@@ -206,7 +206,6 @@ LIMIT
 
 
 """ Query 4 Output (Json): """
-
 [{
   "q_id": "39960",
   "q_tags": "javascript|python",
@@ -233,10 +232,36 @@ LIMIT
   "q_id": "39960",
   "q_tags": "javascript|python",
   "q_title": "Javascript equivalent of Python\u0027s locals()?",
-  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using
-
-##### REST OF ANSWER
-
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "q_date": "2008-09-02 16:29:30.997000 UTC",
+  "response_id": "40012",
+  "response_body": "\u003cp\u003eI seem to remember Brendan Eich commented on this in a recent podcast; if i recall correctly, it\u0027s not being considered, as it adds unreasonable restrictions to optimization. He compared it to the \u003ccode\u003earguments\u003c/code\u003e local in that, while useful for varargs, its very existence removes the ability to guess at what a function will touch just by looking at its definition. \u003c/p\u003e  \u003cp\u003eBTW: i believe JS \u003cem\u003edid\u003c/em\u003e have support for accessing locals through the arguments local at one time - \u003ca href\u003d\"http://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Functions/arguments\" rel\u003d\"nofollow noreferrer\"\u003ea quick search\u003c/a\u003e shows this has been deprecated though.\u003c/p\u003e",
+  "response_tags": null,
+  "response_title": null,
+  "response_creation_date": "2008-09-02 16:50:34.750000 UTC"
+}, {
+  "q_id": "39960",
+  "q_tags": "javascript|python",
+  "q_title": "Javascript equivalent of Python\u0027s locals()?",
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "q_date": "2008-09-02 16:29:30.997000 UTC",
+  "response_id": "40035",
+  "response_body": "\u003cp\u003e@e-bartek, I think that window[functionName] won\u0027t work if you in some closure, and the function name is local to that closure.  For example:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003efunction foo() {     var bar \u003d function () {         alert(\u0027hello world\u0027);     };     var s \u003d \u0027bar\u0027;     window[s](); // this won\u0027t work } \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIn this case, s is \u0027bar\u0027, but the function \u0027bar\u0027 only exists inside the scope of the function \u0027foo\u0027.  It is not defined in the window scope.\u003c/p\u003e  \u003cp\u003eOf course, this doesn\u0027t really answer the original question, I just wanted to chime in on this response.  I don\u0027t believe there is a way to do what the original question asked.\u003c/p\u003e",
+  "response_tags": null,
+  "response_title": null,
+  "response_creation_date": "2008-09-02 17:00:12.077000 UTC"
+}, {
+  "q_id": "39960",
+  "q_tags": "javascript|python",
+  "q_title": "Javascript equivalent of Python\u0027s locals()?",
+  "q_body": "\u003cp\u003eIn Python one can get a dictionary of all local and global variables in the current scope with the built-in functions \u003ccode\u003elocals()\u003c/code\u003e and \u003ccode\u003eglobals()\u003c/code\u003e.  Is there some equivalent way of doing this in Javascript?  For instance, I would like to do something like the following:\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar foo \u003d function(){ alert(\u0027foo\u0027); }; var bar \u003d function(){ alert(\u0027bar\u0027); };  var s \u003d \u0027foo\u0027; locals()[s](); // alerts \u0027foo\u0027 \u003c/code\u003e\u003c/pre\u003e  \u003cp\u003eIs this at all possible, or should I just be using a local object for the lookup?\u003c/p\u003e",
+  "q_date": "2008-09-02 16:29:30.997000 UTC",
+  "response_id": "40067",
+  "response_body": "\u003cp\u003e@pkaeding\u003c/p\u003e  \u003cp\u003eYes, you\u0027re right. \u003cem\u003ewindow[functionName]()\u003c/em\u003e doesn\u0027t work in this case, but \u003cem\u003eeval\u003c/em\u003e does. If I needed something like this, I\u0027d create my own object to keep those functions together.\u003c/p\u003e  \u003cpre\u003e\u003ccode\u003evar func \u003d {}; func.bar \u003d ...; var s \u003d \"bar\"; func[s](); \u003c/code\u003e\u003c/pre\u003e",
+  "response_tags": null,
+  "response_title": null,
+  "response_creation_date": "2008-09-02 17:14:25.007000 UTC"
+}]
 
 
 """ Query 4 Answer:  """
@@ -246,7 +271,7 @@ The table contains 4909 rows.
 """ Query 5: """
 WITH RankedUsers AS (
     SELECT
-        TRIM(LOWER(REGEXP_EXTRACT(u.location, r'^[^,]*,'))) AS usa_city,
+        TRIM((REGEXP_EXTRACT(u.location, r'^[^,]*,'))) AS usa_city,
         u.id,
         u.display_name,
         u.about_me,
@@ -255,7 +280,7 @@ WITH RankedUsers AS (
         u.location,
         ROW_NUMBER() OVER (PARTITION BY TRIM(LOWER(REGEXP_EXTRACT(u.location, r'^[^,]*,'))) ORDER BY u.reputation DESC) AS rank
     FROM
-        `bigquery-public-data.stackoverflow.users` u
+        bigquery-public-data.stackoverflow.users u
     WHERE CASE
       WHEN LOWER(location) in ('united states', 'usa', 'us', 'u.s.', 'u.s.a')
       THEN FALSE
@@ -269,7 +294,7 @@ WITH RankedUsers AS (
 )
 
 SELECT
-    r.usa_city,
+      SUBSTR(r.usa_city, 1, LENGTH(r.usa_city) - 1) as location_in_USA,
     r.id,
     r.display_name,
     r.about_me,
@@ -285,7 +310,7 @@ LIMIT 5;
 
 """ Query 5 Output (Json): """
 [{
-  "usa_city": "pittsburgh,",
+  "location_in_USA": "Pittsburgh",
   "id": "748858",
   "display_name": "mgilson",
   "about_me": "\u003cp\u003eI used to be a fortran and sometimes C programmer, but these days I write mostly python and javascript.  I am interested in computational physics and like to write code.  \u003c/p\u003e\n\n\u003cp\u003eI also used to be an avid gnuplot user and maybe someday I will be again...\u003c/p\u003e\n\n\u003cp\u003eI am a currently a software engineer at \u003ca href\u003d\"https://argo.ai\" rel\u003d\"nofollow noreferrer\"\u003eArgo AI\u003c/a\u003e working to make the world\u0027s cars drive themselves.\u003c/p\u003e\n\n\u003cp\u003e~Matt\u003c/p\u003e",
@@ -293,7 +318,7 @@ LIMIT 5;
   "reputation": "288106",
   "location": "Pittsburgh, PA, United States"
 }, {
-  "usa_city": "woodinville,",
+  "location_in_USA": "Woodinville",
   "id": "634824",
   "display_name": "Matt Johnson-Pint",
   "about_me": "\u003cp\u003ené Matt Johnson.  He/him/his (\u003cem\u003enot dude/bro, please\u003c/em\u003e).\u003c/p\u003e\n\u003cp\u003eHi!  I am primarily a .NET C# developer, and I also do a lot of work in JavaScript.  I specialize in date and time issues, especially the tricky ones involving time zones.\u003c/p\u003e\n\u003cp\u003eI currently work for \u003ca href\u003d\"https://sentry.io\" rel\u003d\"nofollow noreferrer\"\u003eSentry\u003c/a\u003e, primarily on the .NET SDK. I used to work for Microsoft, and other companies prior to that.  All questions, answers, comments and code are from me personally, and in no way represented the opinions of my past or present employers.\u003c/p\u003e",
@@ -301,7 +326,7 @@ LIMIT 5;
   "reputation": "219306",
   "location": "Woodinville, WA, USA"
 }, {
-  "usa_city": "rochester,",
+  "location_in_USA": "Rochester",
   "id": "206403",
   "display_name": "gen_Eric",
   "about_me": "\u003cp\u003eBefore I introduce myself, I just want to politely ask people to \u003cstrong\u003enot\u003c/strong\u003e email me with programming questions.  I have my own work to attend to.  If you want my help, ask a question here, and I might see it :-)\u003c/p\u003e\n\u003chr /\u003e\n\u003cp\u003eAnyway. I\u0027m just your typical web developer.  PHP, JavaScript, jQuery, HTML, CSS, the works.\u003c/p\u003e\n\u003cp\u003eI usually hang out at \u003ccode\u003e/home/nticompass\u003c/code\u003e.  Sometimes I\u0027ll \u003ccode\u003ecd\u003c/code\u003e to other folders, but I usually just chill at home.  I like to hang with my friends at \u003ccode\u003e/usr/share\u003c/code\u003e, or sometimes even \u003ccode\u003e/opt\u003c/code\u003e, when I\u0027m feeling adventurous.\u003c/p\u003e\n\u003cp\u003eMy shell is zsh and my editor of choice is Geany, when I want a GUI, or Vim, when I don\u0027t.  I use Google Chrome, and sometimes Firefox.\u003c/p\u003e\n\u003cp\u003eI use either Arch Linux or Gentoo, though I have been known to use Mac OS X or even Windows at times.\u003c/p\u003e\n\u003cp\u003eI discovered StackOverflow after realizing that Yahoo Answers wasn\u0027t taking it seriously and Experts Exchange made you pay for answers.  I love to answer questions and help people out and I am so grateful to those who have answered my questions.  I know that programming is much better when you have people to reach out to and you\u0027re not in your office pulling your hair out over a missing semicolon!  I am #SOreadytohelp\u003c/p\u003e\n\u003cimg src\u003d\"https://i.stack.imgur.com/KCyhw.png\" width\u003d\"300\" height\u003d\"227\" /\u003e",
@@ -309,36 +334,33 @@ LIMIT 5;
   "reputation": "217247",
   "location": "Rochester, NY, USA"
 }, {
-  "usa_city": "new jersey,",
-  "id": "152948",
-  "display_name": "hobbs",
-  "about_me": "\u003cp\u003eI\u0027m a programmer, occasional sysadmin, Unix automator, and general geek living in New Jersey (but in the general sphere of New York City).\u003c/p\u003e\n\u003cp\u003eI\u0027m currently working primarily in Go, and prior to that my weapon of choice was Perl, but I\u0027m also familiar with C, Python, JavaScript, and Bourne sh and bash. I also have some passing familiarity with (or ancient memories of) Java, C++, Python, Prolog, BASIC, older flavors of Visual Basic, and more.\u003c/p\u003e\n\u003cp\u003eI dabble in Haskell but I\u0027ve never thrown a real problem at it.\u003c/p\u003e\n\u003cp\u003eI run Linux at home and at work but that doesn\u0027t mean I\u0027m ignorant of other systems :)\u003c/p\u003e",
-  "website_url": "http://cleverdomain.org",
-  "reputation": "211474",
-  "location": "New Jersey, United States"
+  "location_in_USA": "Irvine",
+  "id": "390278",
+  "display_name": "Jeff Mercado",
+  "about_me": "\u003cp\u003e\u003ca href\u003d\"https://stackexchange.com/users/166270\"\u003e\n\u003cimg src\u003d\"https://stackexchange.com/users/flair/166270.png\" width\u003d\"208\" height\u003d\"58\" alt\u003d\"profile for Jeff Mercado on Stack Exchange, a network of free, community-driven Q\u0026amp;A sites\" title\u003d\"profile for Jeff Mercado on Stack Exchange, a network of free, community-driven Q\u0026amp;A sites\"\u003e\n\u003c/a\u003e\u003c/p\u003e\n\n\u003cp\u003eComputers have always been a big part of my life.  I\u0027ve always had an interest in programming paradigms and languages as well as low-level systems design.  I enjoy reinventing the wheel, chrome plating it and adding spinners.  I also love to know how everything works from the code that we write, the systems it runs on, and the hardware this is run on.  I want to know it all.  I have no problem building out tools to help make problems I come across a lot easier to deal with.  C# is my language of choice and aim to be sufficiently familiar with all related technologies.  And with the growth that has been sparked ever since the development of the newer Roslyn compilers, my love for it has no bounds.\u003c/p\u003e\n\n\u003cp\u003eLINQ is AWESOME. (period)\u003c/p\u003e\n\n\u003chr\u003e\n\n\u003cp\u003e\u003cstrong\u003ePreferred language(s):\u003c/strong\u003e C, C#\u003cbr\u003e\n\u003cstrong\u003eLoves:\u003c/strong\u003e C, C++, C#, Python, Javascript, Typescript\u003cbr\u003e\n\u003cstrong\u003eWell versed in:\u003c/strong\u003e C, C++, C#, Python, Java, Javascript, Typescript\u003cbr\u003e\n\u003cstrong\u003eFamiliar with:\u003c/strong\u003e VB, F#\u003c/p\u003e",
+  "website_url": null,
+  "reputation": "123647",
+  "location": "Irvine, CA, USA"
 }, {
-  "usa_city": "ny,",
-  "id": "438992",
-  "display_name": "Dave Newton",
-  "about_me": "\u003cp\u003eRuby/JavaScript \u0026amp; generalist; web, apps, embedded systems, firmware.\u003c/p\u003e\n\u003cp\u003e\u0026quot;Microconsulting\u0026quot; available: short-term, rapid turnaround for a variety of problem types.\u003c/p\u003e\n\u003cp\u003eGet me something nice:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ca href\u003d\"http://www.adafruit.com/wishlists/368289\" rel\u003d\"nofollow noreferrer\"\u003eAdafruit Wish List\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"https://www.sparkfun.com/wish_lists/37306\" rel\u003d\"nofollow noreferrer\"\u003eSparkfun Wish List\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"http://www.makershed.com/apps/giftregistry/wishlist/1705\" rel\u003d\"nofollow noreferrer\"\u003eMaker Shed Wish List\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"https://www.pololu.com/wishlist/1J7719\" rel\u003d\"nofollow noreferrer\"\u003ePololu Wish List\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"https://www.shapeways.com/designer/davelnewton/wishlist\" rel\u003d\"nofollow noreferrer\"\u003eShapeways Wish List\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"http://amzn.com/w/2YPB5V3244FYW\" rel\u003d\"nofollow noreferrer\"\u003eAmazon Wish List\u003c/a\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eSometimes I write stuff: \u003ca href\u003d\"https://blog.makersend.com/\" rel\u003d\"nofollow noreferrer\"\u003eMaker\u0027s End\u003c/a\u003e (Company and Blog)\u003c/p\u003e",
-  "website_url": "https://blog.makersend.com",
-  "reputation": "157222",
-  "location": "NY, United States"
+  "location_in_USA": "Seattle",
+  "id": "8690857",
+  "display_name": "Drew Reese",
+  "about_me": "\u003cp\u003eI love the challenge of helping other developers resolve and overcome their hurdles, and expanding my own knowledge base at the same time.\u003c/p\u003e\n\u003cp\u003e\u0026quot;In lifting others, we rise\u0026quot;\u003c/p\u003e\n\u003cp\u003e\u003ca href\u003d\"https://stackexchange.com/users/11875768\"\u003e\u003cimg src\u003d\"https://stackexchange.com/users/flair/11875768.png?theme\u003dclean\" width\u003d\"208\" height\u003d\"58\" alt\u003d\"profile for Drew Reese on Stack Exchange, a network of free, community-driven Q\u0026amp;A sites\" title\u003d\"profile for Drew Reese on Stack Exchange, a network of free, community-driven Q\u0026amp;A sites\"\u003e\u003c/a\u003e\u003c/p\u003e\n\u003cp\u003e\u003ca href\u003d\"https://stackoverflow.blog/2022/05/03/what-counts-as-art-anyway-ep-438/\"\u003eWhat Counts as Art, Anyway ep438\u003c/a\u003e\u003c/p\u003e\n\u003cp\u003e\u003ca href\u003d\"/help/badges/5357/reactjs\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/xqYa6.png\" alt\u003d\"react badge\" /\u003e\u003c/a\u003e #19 \u003cbr/\u003e\n\u003ca href\u003d\"/help/badges/9195/react-hooks\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/sSz3f.png\" alt\u003d\"react-hooks badge\" /\u003e\u003c/a\u003e #2 \u003cbr/\u003e\n\u003ca href\u003d\"/help/badges/78/javascript\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/HINNP.png\" alt\u003d\"javascript badge\" /\u003e\u003c/a\u003e #582 \u003cbr/\u003e\n\u003ca href\u003d\"/help/badges/10969/react-router-dom\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/fcLwK.png\" alt\u003d\"react-router-dom badge\" /\u003e\u003c/a\u003e #1 \u003cbr/\u003e\n\u003ca href\u003d\"/help/badges/8948/react-router\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/U8e7R.png\" alt\u003d\"react-router badge\" /\u003e\u003c/a\u003e #2 \u003cbr/\u003e\n\u003ca href\u003d\"/help/badges/146/legendary\"\u003e\u003cimg src\u003d\"https://i.stack.imgur.com/wt2eO.png\" alt\u003d\"legendary badge\" /\u003e\u003c/a\u003e # 310 \u003cbr/\u003e\u003c/p\u003e",
+  "website_url": "http://awreese.github.io/",
+  "reputation": "121119",
+  "location": "Seattle, WA, USA"
 }]
 
-
 """ Query 5  Answer:  """
-The query identifies the top Stack Overflow users from the USA who mention JavaScript in their profiles. It:
-1 Subquery (RankedUsers):
-        Extracts and ranks users based on reputation and location (USA cities).
-2 Query :
-        Filters for JavaScript mentions in their about_me.
-Output:
-    the highest-ranked user per city, limited to the top 5 overall.
+Weve ranked the users in every USA locations and ranked the leading users from every city based on their reputation.
+The leadng users are from Pittsburgh, Woodinville, Rochester, Irvine, and Seattle. 
+The most prominent user had the impressive reputation 288106,while the user in the 5th place had 121119.
 
 
 
 """ Query 6: """
+
+### Part 1: Grouping the users accroding to their questions
 WITH USER_POST_COUNT AS (
   SELECT
     owner_user_id,
@@ -350,7 +372,6 @@ WITH USER_POST_COUNT AS (
   GROUP BY
     owner_user_id
 )
-
 SELECT
   DIV(num_posts, 1000) AS post_group,
   AVG(u.reputation) AS avg_reputation
@@ -367,6 +388,32 @@ ORDER BY
 
 
 
+### Part 2: Grouping the users accroding to their answers
+### Ranks are one the users table
+WITH USER_ANSWER_COUNT AS (
+  SELECT
+    owner_user_id,
+    COUNT(*) AS num_posts
+FROM
+`bigquery-public-data.stackoverflow.posts_answers` AS answers
+    WHERE
+    owner_user_id IS NOT NULL
+  GROUP BY
+    owner_user_id
+)
+SELECT
+  DIV(num_posts, 1000) AS post_group,
+  AVG(u.reputation) AS avg_reputation
+FROM
+  USER_ANSWER_COUNT
+JOIN
+  `bigquery-public-data.stackoverflow.users` u
+ON
+  USER_ANSWER_COUNT.owner_user_id = u.id
+GROUP BY
+  post_group
+ORDER BY
+  post_group
 
 """ Query 6 Output (Json): """
 [{
@@ -380,6 +427,111 @@ ORDER BY
   "avg_reputation": "109321.49999999999"
 }]
 
+[{
+  "post_group": "0",
+  "avg_reputation": "498.07403141615094"
+}, {
+  "post_group": "1",
+  "avg_reputation": "64227.272781065083"
+}, {
+  "post_group": "2",
+  "avg_reputation": "113348.96588486142"
+}, {
+  "post_group": "3",
+  "avg_reputation": "170224.52358490566"
+}, {
+  "post_group": "4",
+  "avg_reputation": "199336.5"
+}, {
+  "post_group": "5",
+  "avg_reputation": "232587.25423728814"
+}, {
+  "post_group": "6",
+  "avg_reputation": "284761.27083333331"
+}, {
+  "post_group": "7",
+  "avg_reputation": "315574.66666666669"
+}, {
+  "post_group": "8",
+  "avg_reputation": "318147.64285714284"
+}, {
+  "post_group": "9",
+  "avg_reputation": "381030.625"
+}, {
+  "post_group": "10",
+  "avg_reputation": "381304.87500000006"
+}, {
+  "post_group": "11",
+  "avg_reputation": "415732.125"
+}, {
+  "post_group": "12",
+  "avg_reputation": "538500.85714285716"
+}, {
+  "post_group": "13",
+  "avg_reputation": "458101.5"
+}, {
+  "post_group": "14",
+  "avg_reputation": "359371.0"
+}, {
+  "post_group": "15",
+  "avg_reputation": "653522.8"
+}, {
+  "post_group": "16",
+  "avg_reputation": "751870.33333333337"
+}, {
+  "post_group": "17",
+  "avg_reputation": "1053483.0"
+}, {
+  "post_group": "19",
+  "avg_reputation": "781215.0"
+}, {
+  "post_group": "20",
+  "avg_reputation": "469013.0"
+}, {
+  "post_group": "21",
+  "avg_reputation": "1003275.0"
+}, {
+  "post_group": "22",
+  "avg_reputation": "972639.5"
+}, {
+  "post_group": "23",
+  "avg_reputation": "874809.0"
+}, {
+  "post_group": "25",
+  "avg_reputation": "730750.0"
+}, {
+  "post_group": "28",
+  "avg_reputation": "956300.5"
+}, {
+  "post_group": "30",
+  "avg_reputation": "694414.0"
+}, {
+  "post_group": "35",
+  "avg_reputation": "1357603.0"
+}, {
+  "post_group": "36",
+  "avg_reputation": "817703.0"
+}, {
+  "post_group": "85",
+  "avg_reputation": "1211186.0"
+}]
+
 """ Query 6  Answer:  """
+Number of Questions vs. Average Reputation: 
+There's a clear positive correlation. As users ask more questions, their average reputation tends to increase.
+
+Number of Answers vs. Average Reputation:
+ Up to 13,000 answers, there's a positive correlation with average reputation.
+ However, past this point, the correlation fluctuates. 
+ This is due to a smaller number of users in higher answer count ranges. 
+ At extremely high answer counts, the correlation becomes less indicative of the overall trend, as these groups often have very few users.
+
+
+
+
+
+
+
+
 
 
