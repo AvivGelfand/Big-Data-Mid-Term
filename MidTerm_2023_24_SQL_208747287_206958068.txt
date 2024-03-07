@@ -95,9 +95,9 @@ SELECT
     'All Results' AS tag_used,
     COUNT(answer_count) AS total_posts,
     COUNTIF(answer_count >=1) AS posts_with_answers,
-    AVG(answer_count) AS avg_answers,
-    AVG(score) AS avg_score,
-    AVG(view_count) AS avg_views_per_post,
+    ROUND(AVG(answer_count),3) AS avg_answers,
+    ROUND(AVG(score),3) AS avg_score,
+    ROUND(AVG(view_count),3) AS avg_views_per_post,
     EXTRACT(DAYOFWEEK from creation_date) as post_day
 FROM
     `bigquery-public-data.stackoverflow.posts_questions`
@@ -112,67 +112,67 @@ order by tag_used,  total_posts desc;
   "tag_used": "All Results",
   "total_posts": "418134",
   "posts_with_answers": "359182",
-  "avg_answers": "1.5676577365150874",
-  "avg_score": "2.1087306939880519",
-  "avg_views_per_post": "2890.1264953340328",
+  "avg_answers": "1.568",
+  "avg_score": "2.109",
+  "avg_views_per_post": "2890.126",
   "post_day": "4"
 }, {
   "tag_used": "All Results",
   "total_posts": "414798",
   "posts_with_answers": "356302",
-  "avg_answers": "1.5694313858793916",
-  "avg_score": "2.1526260975221683",
-  "avg_views_per_post": "2939.2093910771027",
+  "avg_answers": "1.569",
+  "avg_score": "2.153",
+  "avg_views_per_post": "2939.209",
   "post_day": "5"
 }, {
   "tag_used": "All Results",
   "total_posts": "410725",
   "posts_with_answers": "352668",
-  "avg_answers": "1.5653466431310485",
-  "avg_score": "2.1198125266297403",
-  "avg_views_per_post": "2924.0440026781907",
+  "avg_answers": "1.565",
+  "avg_score": "2.12",
+  "avg_views_per_post": "2924.044",
   "post_day": "3"
 }, {
   "tag_used": "All Results",
   "total_posts": "376293",
   "posts_with_answers": "322260",
-  "avg_answers": "1.5442965986611499",
-  "avg_score": "2.0090036221773993",
-  "avg_views_per_post": "2855.3431979866741",
+  "avg_answers": "1.544",
+  "avg_score": "2.009",
+  "avg_views_per_post": "2855.343",
   "post_day": "2"
 }, {
   "tag_used": "All Results",
   "total_posts": "371657",
   "posts_with_answers": "320208",
-  "avg_answers": "1.5763943636202202",
-  "avg_score": "2.0808702647871562",
-  "avg_views_per_post": "2874.2597502535959",
+  "avg_answers": "1.576",
+  "avg_score": "2.081",
+  "avg_views_per_post": "2874.26",
   "post_day": "6"
 }, {
   "tag_used": "All Results",
   "total_posts": "221613",
   "posts_with_answers": "191690",
-  "avg_answers": "1.4982695058502891",
-  "avg_score": "1.964086041883824",
-  "avg_views_per_post": "2642.3997148181747",
+  "avg_answers": "1.498",
+  "avg_score": "1.964",
+  "avg_views_per_post": "2642.4",
   "post_day": "1"
 }, {
   "tag_used": "All Results",
   "total_posts": "220939",
   "posts_with_answers": "192004",
-  "avg_answers": "1.5235924848034972",
-  "avg_score": "2.0430028197828358",
-  "avg_views_per_post": "2731.443511557487",
+  "avg_answers": "1.524",
+  "avg_score": "2.043",
+  "avg_views_per_post": "2731.444",
   "post_day": "7"
 }]
 
 
 """ Query 3  Answer:  """
-In post with the tag javascript:
+In posts with the tag javascript:
 - Day 4 seems the most popular day for posting as well as answering
 - The weekend days 7 and 1 are the most un-popular days for users, both in terms of posting and in terms of and answering
-- The amount of posts and amount of answers seem to distribute normally, peeking on the 4th day
-- The average answers per post, average views per post and average score per post slightly only slightly changed between the days of the post.
+- The amount of posts and amount of answers seem to be distributed normally, peeking on the 4th day
+- The average answers per post, average views per post and average score per post only slightly changed between the days of the post.
 
 """ Query 4: """
 WITH RelevantQuestions AS (
